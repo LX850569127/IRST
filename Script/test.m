@@ -27,67 +27,6 @@
 % plot(polygon(:,1),polygon(:,2),'k','MarkerSize',0.02); 
 % plot(rectangleB(:,1),rectangleB(:,2),'k','MarkerSize',0.02); 
 % plot(rectangleC(:,1),rectangleC(:,2),'k','MarkerSize',0.02); 
-%% AMT方法比固定值5迭代多出来的点
-
-% Fixed5=Fixed5;
-% 
-orbitNum_AMT=zeros(size(AMT,1),2);
-
-for i=1:size(AMT,1)
-    Num=AMT(i).orbitNum; 
-    orbitNum_AMT(i,:)=Num;
-end
-
-orbitNum_AMTPro=zeros(size(AMTPro,1),2);
-for i=1:size(AMTPro,1)
-    Num=AMTPro(i).orbitNum; 
-    orbitNum_AMTPro(i,:)=Num;
-end
-
-U=unique([orbitNum_AMT;orbitNum_AMTPro],'rows');   %非重复的值
-
-Lia = ismember(U,orbitNum_AMTPro,'rows');       
-%  
-d=U(find(Lia==0),:);       %AMT多出固定值5的点
-
-% 找出坐标不一致的点以及原因
-% coor_AMT=zeros(size(AMT,1),1);
-% 
-% for i=1:size(AMT,1)
-%     Num=AMT(i).PDOP; 
-%     coor_AMT(i,:)=Num;
-% end
-% 
-% coor_AMTPro=zeros(size(AMTPro,1),1);
-% for i=1:size(AMTPro,1)
-%     Num=AMTPro(i).PDOP; 
-%     coor_AMTPro(i,:)=Num;
-% end
-% U=unique([coor_AMTPro;coor_AMT],'rows');   %非重复的值
-% 
-% Lia = ismember(U,coor_AMTPro,'rows');       
-% %  
-% d=U(find(Lia==0),:);       %AMT多出固定值5的点
-% 
-% 
-% 
-% find(roundn(coor_AMT,-4)==10.8443);
-% coor_AMTPro(111)=[];
-% f = ismember(orbitNum_AMT,d,'rows');       
-% 
-% cor=zeros(size(d,1),2);
-%     j=1;
-% for i=1:size(AMT,1)
-%     if f(i)
-%         cor(j,:)=AMT(i).coordinate;
-%         j=j+1;
-%     end
-% end
-% 
-% figure;
-% plot(adjustBoundary(:,1),adjustBoundary(:,2),'k','MarkerSize',0.01); 
-% hold on;
-% scatter(cor(:,1),cor(:,2),20,[241 64 64]/255,'filled');
 
 %% 对共同存在的点进行比较
 
@@ -152,29 +91,7 @@ d=U(find(Lia==0),:);       %AMT多出固定值5的点
 %            commonDynamic=[commonDynamic;Dynamic(i)];
 %      end
 % end
-%% 寻找AMT时间优化后损失的交叉点
 
-cor_A=zeros(size(AMT,1),2);
-for i=1:size(AMT,1)
-   cor_A(i,:)=AMT(i).orbitNum;
-end
-
-cor_D=zeros(size(AMTRE,1),2);
-for i=1:size(AMTRE,1)
-   cor_D(i,:)=AMTRE(i).orbitNum;
-end
-
-
-U=unique([cor_A;cor_D],'rows');   %非重复的值
-
-Lia = ismember(U,cor_A,'rows');       
-%  
-d=U(find(Lia==0),:);       %AMT多出固定值5的点
-
-% orbitCom=zeros(size(Combine,1),2);
-% for i=1:size(Combine,1)
-%        orbitCom(i,:)=[Combine(i,1).orbitNum,Combine(i,2).orbitNum];
-% end
 %% 测试先计算出所有点再根据边界进行剔除
 
 % 计算过程未进行边界剔除的点
@@ -261,16 +178,16 @@ d=U(find(Lia==0),:);       %AMT多出固定值5的点
 % 
 % longtitude=raw(52).longtitude;
 % longtitude(longtitude<0)=180+(180-abs(longtitude(longtitude<0)));  %对经度进行归化，西经改为正方向上的东经
-coor=RIS_A201303(44).coordinate;
-figure;
-% adjustBoundary(adjustBoundary(:,1)>180)=-(360-adjustBoundary(adjustBoundary(:,1)>180));
-plot(adjustBoundary(:,1),adjustBoundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
-hold on;
-scatter(coor(:,1),coor(:,2));
-
-coor=RIS_D201303(49).coordinate;
-hold on;
-scatter(coor(:,1),coor(:,2)); 
+% coor=RIS_A201303(44).coordinate;
+% figure;
+% % adjustBoundary(adjustBoundary(:,1)>180)=-(360-adjustBoundary(adjustBoundary(:,1)>180));
+% plot(adjustBoundary(:,1),adjustBoundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% scatter(coor(:,1),coor(:,2));
+% 
+% coor=RIS_D201303(49).coordinate;
+% hold on;
+% scatter(coor(:,1),coor(:,2)); 
 % scatter(coor(91400:216000,1),coor(91400:216000,2)); 
 % 
 % longtitude=raw(51).longtitude;
@@ -288,3 +205,154 @@ scatter(coor(:,1),coor(:,2));
 % coor=[longtitude,raw(53).latitude,raw(53).time];
 % hold on;
 % scatter(coor(:,1),coor(:,2),2); 
+
+%% 数据的预处理测试
+
+% coorA=RIS_A201306(5,1).coordinate;
+% 
+% disA=zeros(size(coorA,1),2);
+% 
+% 
+% for i=1:size(coorA,1)
+%     if i==1
+%        disA(i,:)=SphereDist([coorA(1,1),coorA(1,2)],[coorA(2,1),coorA(2,2)])*1000;
+%     elseif i==size(coorA,1)
+%        disA(i,:)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-1,1),coorA(i-1,2)])*1000;
+%     else 
+%        disA(i,1)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-1,1),coorA(i-1,2)])*1000;   %与前一点的距离
+%        disA(i,2)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i+1,1),coorA(i+1,2)])*1000;   %与后一点的距离
+%     end
+% end
+% sd=std(disA(2:end,1));
+% meanVal=mean(disA(2:end,1));
+
+%尝试一下两点
+% disA=zeros(size(coorA,1),4);
+% for i=1:size(coorA,1)
+%     if i==1
+%        disA(i,1:2)=SphereDist([coorA(1,1),coorA(1,2)],[coorA(2,1),coorA(2,2)])*1000;
+%        disA(i,3:4)=SphereDist([coorA(1,1),coorA(1,2)],[coorA(3,1),coorA(3,2)])*1000;
+%     elseif i==2
+%       disA(i,1:2)=SphereDist([coorA(1,1),coorA(1,2)],[coorA(2,1),coorA(2,2)])*1000;
+%       disA(i,3)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i+1,1),coorA(i+1,2)])*1000;
+%       disA(i,4)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i+2,1),coorA(i+2,2)])*1000;
+%     elseif i==size(coorA,1)-1
+%       disA(i,1)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-2,1),coorA(i-2,2)])*1000;
+%       disA(i,2)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-1,1),coorA(i-1,2)])*1000;
+%       disA(i,3:4)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i+1,1),coorA(i+1,2)])*1000;
+%     elseif i==size(coorA,1)
+%       disA(i,1:2)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-2,1),coorA(i-2,2)])*1000;
+%       disA(i,3:4)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-1,1),coorA(i-1,2)])*1000;
+%     else 
+%       disA(i,1)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-2,1),coorA(i-2,2)])*1000;
+%       disA(i,2)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i-1,1),coorA(i-1,2)])*1000;
+%       disA(i,3)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i+1,1),coorA(i+1,2)])*1000;
+%       disA(i,4)=SphereDist([coorA(i,1),coorA(i,2)],[coorA(i+2,1),coorA(i+2,2)])*1000;
+%     end
+% end
+% disA1=mean(disA(:,1:2),2);
+% disA2=mean(disA(:,3:4),2);
+% disA=[disA1,disA2];
+% sd=std(disA(:));
+% meanVal=mean(disA(:));
+% % % 
+
+% [i]=find(disA(:,1)>=(meanVal+3*sd)&disA(:,2)>=(meanVal+3*sd));
+% coorA_errol=coorA(i,:);
+% coorA(i,:)=[];
+% figure;
+% plot(boundary(:,1),boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% scatter(coorA(:,1),coorA(:,2),4,[241 64 64]/255,'filled','HandleVisibility','off');
+% hold on;
+% scatter(coorA_errol(:,1),coorA_errol(:,2),20,[26 111 223]/255,'filled');
+% scatter(res.',coorA(:,2),5,[26 111 223]/255,'filled');
+
+% function res = MovingAverage(input,N)
+% %% input为平滑前序列(列向量和行向量均可)；N为平滑点数（奇数）；res返回平滑后的序列(默认行向量)。
+% sz = max(size(input));
+% n = (N-1)/2;
+% res = [];
+% for i = 1:length(input)
+%     if i <= n
+%         res(i) = sum(input(1:2*i-1))/(2*i-1);
+%     elseif i < length(input)-n+1
+%         res(i) = sum(input(i-n:i+n))/(2*n+1);
+%     else
+%         temp = length(input)-i+1;
+%         res(i) = sum(input(end-(2*temp-1)+1:end))/(2*temp-1);
+%     end
+% end
+% end
+
+%绘制
+
+% [i,j] = find(repmat(min(x1(1:end-1),x1(2:end)),1,n2) <= ...
+%     
+% coorD=Combine(486,2).coordinate;
+
+
+%% 对比AMT方法数据预处理后减少的5个点
+
+%数据预处理前
+% AMTNum=zeros(size(AMT,1),2);
+% for i=1:size(AMT,1)
+%     AMTNum(i,:)=AMT(i).orbitNum;
+% end
+% 
+% % % 数据预处理后
+% AMTProNum=zeros(size(AMTPro,1),2);
+% for i=1:size(AMTPro,1)
+%     AMTProNum(i,:)=AMTPro(i).orbitNum;
+% end
+% 
+% C=unique([AMTNum;AMTProNum],'rows'); 
+% Lia = ismember(C,AMTProNum,'rows');
+% d=C(find(Lia==0),:);
+
+% % 将combine组合的轨道号提取出来，便于查找
+% sizeOfCombine=size(Combine,1);
+% orbitNumCom=zeros(sizeOfCombine,2);
+% for i=1:sizeOfCombine
+%     orbitNumCom(i,1)=Combine(i,1).orbitNum;
+%     orbitNumCom(i,2)=Combine(i,2).orbitNum;
+% end
+
+% cor_A=Combine(1177,1).coordinate;
+% cor_D=Combine(1177,2).coordinate;
+% figure;
+% plot(boundary(:,1),boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% scatter(afCoor(652,1),afCoor(652,2),100,'p','k','filled');
+% scatter(cor_A(:,1),cor_A(:,2),4,[241 64 64]/255,'filled','HandleVisibility','off');
+% scatter(cor_D(:,1),cor_D(:,2),4,[26 111 223]/255,'filled');
+
+%%
+% 找到AMT方法能计算出来但是自己写的跨立交叉法计算不出来的情况
+% orbitNum1=zeros(size(CP_AMT_Line,1),2);
+% for i=1:size(CP_AMT_Line,1)
+%     Num=CP_AMT_Line(i).orbitNum; 
+%     orbitNum1(i,:)=Num;
+% end
+% 
+% orbitNum2=zeros(size(CP,1),2);
+% for i=1:size(CP,1)
+%     Num=CP(i).orbitNum; 
+%     orbitNum2(i,:)=Num;
+% end
+% 
+% C=unique([orbitNum1;orbitNum2],'rows'); 
+% 
+% Lia = ismember(C,orbitNum2,'rows');
+% d=C(find(Lia==0),:);
+
+%% 固定值迭代示意图
+figure;
+box on;
+% Combine=JudgeCrossPoint(RIS_A201301,RIS_D201301);
+% sizeOfCrossCombinations=size(Combine,1);
+
+for j=20:20
+    CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
+    AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
+end

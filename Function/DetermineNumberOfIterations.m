@@ -74,7 +74,7 @@ std_Dev=(std_A+std_D)/2;         %求标准差的平均值
 
 %% 三、根据标准差设置对应的迭代点数
 
-NumOfIterativePoints=ceil(std_Dev/0.5)*2;
+NumOfIterativePoints=ceil(std_Dev/0.5)*2;   
 % switch fix(std_Dev/0.5)
 %     case 0  
 %         NumOfIterativePoints=2;

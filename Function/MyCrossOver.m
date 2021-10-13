@@ -8,8 +8,10 @@ function [ CrossOverPointOutput ] = PrecisePositionOfCrossOver( Ascending_data,D
 cor_A=Ascending_data.coordinate;
 cor_D=Descending_data.coordinate;
 % 调试 画出升降轨的卫星脚点的原始分布
-scatter(cor_A(:,1),cor_A(:,2),4,[241 64 64]/255,'filled','HandleVisibility','off');
-scatter(cor_D(:,1),cor_D(:,2),4,[26 111 223]/255,'filled');
+hold on;
+% scatter(cor_A(:,1),cor_A(:,2),8,[127 140 141]/255,'filled','HandleVisibility','off');
+% scatter(cor_D(:,1),cor_D(:,2),8,[127 140 141]/255,'filled');
+
 
 coefficient=[];           %拟合得到的二次曲线的系数
 %升轨拟合
@@ -74,13 +76,13 @@ end
 % %    CrossOverPointOutput=[];
 % %    return;
 % end
-%调试 画出拟合后的概略点位置
-% scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),100,'d','k','filled','HandleVisibility','off');
+% 调试 画出拟合后的概略点位置
+% scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'d','k','filled');
 
 %判断3
 %若粗略位置是因为曲线过短导致的错误解，通过该点与升降轨的纬度差进行剔除
  min1=min(abs(cor_A(:,2)-CursoryCrossPoint(2)))+min(abs(cor_D(:,2)-CursoryCrossPoint(2)));
-if min1>0.06  %纬度差的最小值
+if min1>0.1  %纬度差的最小值
     CrossOverPointOutput=[];
     return;
 end
@@ -91,7 +93,7 @@ end
 %% 二、求精确位置
 
 %方法一 迭代法
-% CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,35);
+CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,5);
 
 %     scatter(CrossOverPoint(1),CrossOverPoint(2),88,'p','k','filled');
 
@@ -100,59 +102,58 @@ end
 % CrossOverPoint1=ExactPosition2(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
 %     scatter(CrossOverPoint1(1),CrossOverPoint1(2),88,'p','k','filled');
 %2) AMT工具的交叉法
-[lat,lon]=crossovers([cor_A(:,2);cor_D(:,2)],[cor_A(:,1);cor_D(:,1)],'SizeA',size(cor_A,1),'tile','off');
-if lon<0
-    lon=180+180-abs(lon);
-end
-CrossOver_AMT=[lon,lat];
-CrossOverPoint=[];
-
-if ~isempty(CrossOver_AMT)   %输出多个交叉点的情况，选择距离升降轨最近的交叉点
-    [in]= inross(CrossOver_AMT(:,1),CrossOver_AMT(:,2),AdjustBoundary);
-        hold on;
-       scatter(CrossOver_AMT(:,1),CrossOver_AMT(:,2),88,'p','b','filled');
-    if sum(in)==1   %只有一个点在边界内时直接赋值
-        CrossOverPoint=CrossOver_AMT(in,:);
-    elseif sum(in)>1   %有多个点在边界内时选取距离插值点最接近的一个点
-        CrossOver_AMT=CrossOver_AMT(in,:);
-        
-       hold on;
-       scatter(CrossOver_AMT(:,1),CrossOver_AMT(:,2),88,'p','b','filled');
-       
-        dis=zeros(size(CrossOver_AMT,1),1);
-        for i=1:size(CrossOver_AMT,1)
-            x=CrossOver_AMT(i,1);  
-            y=CrossOver_AMT(i,2);  %经纬度
-                        
-            ind=find(cor_A(:,2)>=y);
-            Top_Cor_A=cor_A(ind,:);        %上方的升轨点
-            ind=find(cor_A(:,2)<y);
-            Bot_Cor_A=cor_A(ind,:);       %下方的升轨点
-            
-            ind=find(cor_D(:,2)>=y);
-            Top_Cor_D=cor_D(ind,:);        %上方的降轨点
-            ind=find(cor_D(:,2)<y);
-            Bot_Cor_D=cor_D(ind,:);       %下方的降轨点 
-            
-            [dis1,row1]=min(distance([x,y],Top_Cor_A(:,1:2)));
-            [dis2,row2]=min(distance([x,y],Bot_Cor_A(:,1:2)));
-            [dis3,row3]=min(distance([x,y],Top_Cor_D(:,1:2)));
-            [dis4,row4]=min(distance([x,y],Bot_Cor_D(:,1:2)));  
-            
-%             A1=Top_Cor_A(row1,1:2);
-%             A2=Bot_Cor_A(row2,1:2);
-%             B1=Top_Cor_D(row3,1:2);
-%             B2=Bot_Cor_D(row4,1:2);
+% [lat,lon]=crossovers([cor_A(:,2);cor_D(:,2)],[cor_A(:,1);cor_D(:,1)],'SizeA',size(cor_A,1),'tile','off');
+% if lon<0
+%     lon=180+180-abs(lon);
+% end
+% CrossOver_AMT=[lon,lat];
+% CrossOverPoint=[];
+%   
+% if ~isempty(CrossOver_AMT)   %输出多个交叉点的情况，选择距离升降轨最近的交叉点
+%     [in]= inross(CrossOver_AMT(:,1),CrossOver_AMT(:,2),AdjustBoundary);
+%  
+%     if sum(in)==1   %只有一个点在边界内时直接赋值
+%         CrossOverPoint=CrossOver_AMT(in,:);
+%     elseif sum(in)>1   %有多个点在边界内时选取距离插值点最接近的一个点
+%         CrossOver_AMT=CrossOver_AMT(in,:);
+% %         
+% %        hold on;
+% %        scatter(CrossOver_AMT(:,1),CrossOver_AMT(:,2),88,'p','b','filled');
+%       
+%         dis=zeros(size(CrossOver_AMT,1),1);
+%         for i=1:size(CrossOver_AMT,1)
+%             x=CrossOver_AMT(i,1);  
+%             y=CrossOver_AMT(i,2);  %经纬度
+%                         
+%             ind=find(cor_A(:,2)>=y);
+%             Top_Cor_A=cor_A(ind,:);        %上方的升轨点
+%             ind=find(cor_A(:,2)<y);
+%             Bot_Cor_A=cor_A(ind,:);       %下方的升轨点
 %             
-%             list=[A1;A2;B1;B2];
-%             if i==4
-%             scatter(list(:,1),list(:,2),30,'r');
-%             end          
-            dis(i)=mean([dis1,dis2,dis3,dis4]);                            
-        end
-        CrossOverPoint=CrossOver_AMT(find(sum(dis,2)==min(sum(dis,2))),:);
-    end
-end
+%             ind=find(cor_D(:,2)>=y);
+%             Top_Cor_D=cor_D(ind,:);        %上方的降轨点
+%             ind=find(cor_D(:,2)<y);
+%             Bot_Cor_D=cor_D(ind,:);       %下方的降轨点 
+%             
+%             [dis1,row1]=min(distance([x,y],Top_Cor_A(:,1:2)));
+%             [dis2,row2]=min(distance([x,y],Bot_Cor_A(:,1:2)));
+%             [dis3,row3]=min(distance([x,y],Top_Cor_D(:,1:2)));
+%             [dis4,row4]=min(distance([x,y],Bot_Cor_D(:,1:2)));  
+%             
+% %             A1=Top_Cor_A(row1,1:2);
+% %             A2=Bot_Cor_A(row2,1:2);
+% %             B1=Top_Cor_D(row3,1:2);
+% %             B2=Bot_Cor_D(row4,1:2);
+% %             
+% %             list=[A1;A2;B1;B2];
+% %             if i==4
+% %             scatter(list(:,1),list(:,2),30,'r');
+% %             end          
+%             dis(i)=mean([dis1,dis2,dis3,dis4]);                            
+%         end
+%         CrossOverPoint=CrossOver_AMT(find(sum(dis,2)==min(sum(dis,2))),:);
+%     end
+% end
 
 
 %  debug
@@ -363,10 +364,18 @@ end
 %     A( A(:,3)>2000| A(:,3)<-55.5|A(:,5)>2,:)=[];
 %     B( B(:,3)>2000| B(:,3)<-55.5|B(:,5)>2,:)=[];
     
+   if sum(A(:,5)>25)+ sum(B(:,5)>25)>0
+        CrossOverPointOutput=[];
+        return;
+   end
+   
     A( A(:,5)>2,:)=[];
     B( B(:,5)>2,:)=[];
 
-    
+%     if size(A,1)<=1||size(B,1)<=1
+%         CrossOverPointOutput=[];
+%         return;
+%     end
     
     if isempty(A)||isempty(B)
         CrossOverPointOutput=[];

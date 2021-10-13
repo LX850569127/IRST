@@ -90,7 +90,6 @@ y_D=extendData_D(:,1);    %经度
 
 
 
-
 if NumOfIterativePoints<limit
     %1.4.1  利用延伸后得到的降轨数据进行一次拟合
     coefficient2=polyfit(x_D,y_D,1);
@@ -100,23 +99,14 @@ if NumOfIterativePoints<limit
     coefficient2=polyfit(x_D,y_D,2);
     y_D=coefficient2(1).*x_D.*x_D+coefficient2(2).*x_D+coefficient2(3);  %拟合后的经度
 end
-%debug
-%     scatter(extendData_D(:,1),extendData_D(:,2),30,'MarkerFaceColor','b'...
-%             ,'MarkerEdgeColor','k');
-%     scatter(extendData_A(:,1),extendData_A(:,2),30,'MarkerFaceColor','r'...
-%         ,'MarkerEdgeColor','k');
-%调试 加粗拟合时所使用的数据点以及拟合后的升降轨曲线
-% hold on;
 
-%       延长拟合曲线
-%     x_A=linspace(-81,-78,20);
 %     直线拟合
 %     y_A=coefficient1(1).*x_A+coefficient1(2);  %拟合后的经度
 %     曲线拟合
-%      y_A=coefficient1(1).*x_A.*x_A+coefficient1(2).*x_A+coefficient1(3);  %拟合后的经度
+%     y_A=coefficient1(1).*x_A.*x_A+coefficient1(2).*x_A+coefficient1(3);  %拟合后的经度
   
 
-%     plot(y_A,x_A,'--','Color',[0 0 0]/255,'LineWidth',2);
+   
 %     
 %     x_D=linspace(-81,-78,20);
 %         直线拟合
@@ -124,7 +114,7 @@ end
 %     曲线拟合
 %     y_D=coefficient2(1).*x_D.*x_D+coefficient2(2).*x_D+coefficient2(3);  %拟合后的经度
 
-%     plot(y_D,x_D,'--','Color',[0 0 0]/255,'LineWidth',2);
+
 
 
 
@@ -155,14 +145,39 @@ if NumOfIterativePoints<limit
     CrossOverPoint=[longofCrossPoint(1),latOfCrossPoint(1)];
 
 end
-    % 调试
-%     hold on;
-%     scatter(CrossOverPoint(1),CrossOverPoint(2),88,'p','c','filled');
+%% plot for debugging
+
+% Extend coordinates
+x_A=linspace(min(x_A)-0.06,max(x_A)+0.01,10);
+x_D=linspace(min(x_D)-0.06,max(x_D)+0.01,10);
+y_A=coefficient1(1).*x_A+coefficient1(2); 
+y_D=coefficient2(1).*x_D+coefficient2(2); 
+
+% Clip raw data
+rowA=SearchClosestValue(cor_A(:,2),CursoryCrossPoint(2));
+rowD=SearchClosestValue(cor_D(:,2),CursoryCrossPoint(2));
+
+% Plot 
+scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'d','k','filled');
+scatter(CrossOverPoint(1),CrossOverPoint(2),100,'p','k','filled','HandleVisibility','off');
+scatter(cor_A(rowA-30:rowA+30,1),cor_A(rowA-30:rowA+30,2),8,[127 140 141]/255,'filled','HandleVisibility','off');
+scatter(cor_D(rowD-30:rowD+30,1),cor_D(rowD-30:rowD+30,2),8,[127 140 141]/255,'filled');
+scatter(extendData_D(:,1),extendData_D(:,2),20,'MarkerFaceColor','k','MarkerEdgeColor','k','HandleVisibility','off');
+scatter(extendData_A(:,1),extendData_A(:,2),20,'MarkerFaceColor','k','MarkerEdgeColor','k');
+plot(y_A,x_A,'--','Color',[0 0 0]/255,'LineWidth',1,'HandleVisibility','off');
+plot(y_D,x_D,'--','Color',[0 0 0]/255,'LineWidth',1,'HandleVisibility','off');
+
+% Set
+set(gca,'fontsize',15);
+xlabel('经度/(°)','FontSize',15);
+ylabel('纬度/(°)','FontSize',15);
+legend('概略位置','数据点','拟合点');
+
 
 %% 
 % 迭代过程中是否每一次迭代都重新确定迭代点数的开关 
 % if Update && rem(i,3)==0
-if Update
+ if Update
     NumOfIterativePoints=DetermineNumberOfIterations(cor_A,cor_D,CursoryCrossPoint,Tangent);  %确定迭代点数的固定值
 end
 
