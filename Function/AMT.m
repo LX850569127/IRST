@@ -6,10 +6,10 @@ function [OutputPoint] = AMT(CorA,CorD,InputPoint,Boundary)
 %对升、降轨进行裁切，以提高运行速度
 
 LonRange=[InputPoint(1)-1.5,InputPoint(1)+1.5];       %经度范围   
-LatRange=[InputPoint(2)-0.5,InputPoint(2)+0.51];       %纬度范围
+LatRange=[InputPoint(2)-0.51,InputPoint(2)+0.51];       %纬度范围
 A=ScreenCoordinatasRegularly(CorA,LonRange,LatRange);
 D=ScreenCoordinatasRegularly(CorD,LonRange,LatRange);
-
+% 
 % scatter(A(:,1),A(:,2),15,'m','filled');
 % scatter(D(:,1),D(:,2),15,'c','filled');
 

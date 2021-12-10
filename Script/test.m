@@ -299,8 +299,8 @@
 % for i=1:size(AMT,1)
 %     AMTNum(i,:)=AMT(i).orbitNum;
 % end
-% 
-% % % 数据预处理后
+
+% 数据预处理后
 % AMTProNum=zeros(size(AMTPro,1),2);
 % for i=1:size(AMTPro,1)
 %     AMTProNum(i,:)=AMTPro(i).orbitNum;
@@ -347,12 +347,156 @@
 % d=C(find(Lia==0),:);
 
 %% 固定值迭代示意图
-figure;
-box on;
+% figure;
+% box on; 
+% hold on;
 % Combine=JudgeCrossPoint(RIS_A201301,RIS_D201301);
 % sizeOfCrossCombinations=size(Combine,1);
 
-for j=20:20
+% for j=20:20
+%     CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
+%     AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
+% end
+% set(gca,'fontsize',15);
+% xlabel('经度/(°)','FontSize',16);
+% ylabel('纬度/(°)','FontSize',16);
+
+%% CryoSat-2 Coordinate read
+% figure;
+% plot(boundary(:,1),boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% for i=1:90
+%     coor=FIL_A201301(i).coordinate;
+%     scatter(coor(:,1),coor(:,2),2,[26 111 223]/255,'filled');
+% end
+% 
+% coorA=[];
+% for i=1:90
+%     coor=FIL_D201301(i).coordinate;
+%     coorA=[coorA;coor(:,1:2)];
+% end
+% ind=[1:2:size(coorA,1)];
+% coorA=coorA(ind,:);
+% scatter(coorA(:,1),coorA(:,2),2,[26 111 223]/255,'filled');
+
+%% Location deviation 
+% figure;
+% plot(boundary(:,1),boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% % Combine=JudgeCrossPoint(RIS_A201301,RIS_D201301);
+% sizeOfCrossCombinations=size(Combine,1);   
+% AllCrossOverPoint=[];
+% for j=1500:1500
+%    CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
+%    AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
+% end
+% 
+% set(gca,'fontsize',15);
+% xlabel('经度/(°)','FontSize',16);
+% ylabel('纬度/(°)','FontSize',16);
+%% Extra points relative to the fixed 5
+% orbitNumSet=[];
+% year=2013;
+% for i=1:1
+%     
+%     if i<10
+%         month=strcat('0',num2str(i));
+%     else 
+%          month=num2str(i);
+%     end 
+%    AscendPeriod=strcat(num2str(year),month);
+%    DescendPeriod=strcat(num2str(year),month);
+%   variateName=strcat('CP2', '_A',AscendPeriod(3:6),'_D',DescendPeriod(3:6));  %最后生成的交叉点集合的命名
+%   CP=eval(variateName);
+%   orbitNum=[];
+%   for j=1:size(CP,1)
+%       orbitNum=[orbitNum;CP(j).orbitNum];
+%   end
+%   orbitNumSet=[orbitNumSet;orbitNum];
+% end
+
+% C=unique([orbitNumSet_AMTPro;orbitNumSet_Fixed35],'rows'); 
+% Lia = ismember(C,orbitNumSet_Fixed35,'rows');
+% d=C(find(Lia==0),:);
+
+% % Pick extra points
+% coor=[];
+% year=2013;
+% for i=1:12
+%     if i<10
+%         month=strcat('0',num2str(i));
+%     else 
+%          month=num2str(i);
+%     end 
+%    AscendPeriod=strcat(num2str(year),month);
+%    DescendPeriod=strcat(num2str(year),month);
+%   variateName=strcat('CP2', '_A',AscendPeriod(3:6),'_D',DescendPeriod(3:6));  %最后生成的交叉点集合的命名
+%   CP=eval(variateName);
+%   for j=1:size(CP,1)
+%       orbitNum=CP(j).orbitNum;
+%      a= ismember(orbitNum,d,'rows');
+%     if ismember(orbitNum,d,'rows')
+%            coor=[coor;CP(j).coordinate];
+%     end
+%   end
+% end
+% plot extra points
+% figure;
+% plot(FilchneBoundary(:,1),FilchneBoundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% scatter(coor(:,1),coor(:,2),20,[127 140 141]/255,'filled');
+
+%% Plot cursory position solution process
+% figure;
+% % plot(boundary(:,1),boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% box on;
+% % Combine=JudgeCrossPoint(RIS_A201301,RIS_D201301);
+% sizeOfCrossCombinations=size(Combine,1);   
+% AllCrossOverPoint=[];
+% for j=666:666
+%    CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
+%    AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
+% end
+% set(gca,'fontsize',15);
+% xlabel('经度/(°)','FontSize',16);
+% ylabel('纬度/(°)','FontSize',16);
+
+%% Plot cursory position solution process
+% ncread('X:\Xiao\Master\Project\Crossover\Plot\gmtDraw\ExtraPointsDistribute\antarctic_DEM.nc','x_range');
+% a=ncinfo('X:\Xiao\Master\Project\Crossover\Plot\gmtDraw\ExtraPointsDistribute\antarctic_DEM.nc');   %文件头信息
+% 
+% nc=ncinfo('Y:\DEM\Slater DEM\Antarctica_Cryosat2_1km_DEMv1.0.nc');
+% x=ncread('Y:\DEM\Slater DEM\Antarctica_Cryosat2_1km_DEMv1.0.nc','x');
+
+%% plot ClipTrace of Ronne 
+% figure;
+% plot(RonneBoundary(:,1),RonneBoundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% for i=1:size(Cut201302,1)
+%     cor=Cut201302(i).coordinate;
+%     scatter(cor(:,1),cor(:,2),5,[127 140 141]/255,'filled');
+% end
+%% Clip Region Of Roone 
+% figure;  
+% plot(RonneBoundary(:,1),RonneBoundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% for i=1:size(Cut201302,1)
+%     cor=Cut201302(i).coordinate;
+%     scatter(cor(:,1),cor(:,2),5,[127 140 141]/255,'filled');
+% end
+
+%% 绘制拟合曲线及概略位置图
+figure;
+hold on;
+box on;
+set(gca,'fontsize',14);
+xlabel('Longitude[ ° ]','FontSize',14);
+ylabel('Latitude[ ° ]','FontSize',14);
+sizeOfCrossCombinations=size(Combine,1);
+for j=310:310
+%     str=[month,'正在计算交叉点',num2str(j/sizeOfCrossCombinations*100),'%'];
+%     waitbar(j/sizeOfCrossCombinations,bar,str);
     CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
     AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
 end

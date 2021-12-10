@@ -81,7 +81,7 @@ for j=1:12
     end    
     Bias=[ADBias;DABias];
     All_CP=[All_CP;Bias];
-end
+ 
       meanBias_PDOP=mean(All_CP(:,4));
 %       All_CP(abs(All_CP(:,3))>2,:)=[];      %认定超过2m的不符值为粗差，进行剔除
 %       All_CP(:,3)=abs(All_CP(:,3));  
@@ -93,7 +93,7 @@ end
      
 %     pick=ScreenCoordinatasRegularly(All_CP,[167.3,194.89],[-82.45,-78.92]);
 %     pick_PDOP=mean(pick(:,4))*100; 
-    
+end    
 %%
 
 % 误差处理以及处理后的点进行保存

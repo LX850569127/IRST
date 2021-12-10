@@ -7,12 +7,6 @@ function [ CrossOverPointOutput ] = PrecisePositionOfCrossOver( Ascending_data,D
 %% 一、求粗略位置
 cor_A=Ascending_data.coordinate;
 cor_D=Descending_data.coordinate;
-% 调试 画出升降轨的卫星脚点的原始分布
-hold on;
-% scatter(cor_A(:,1),cor_A(:,2),8,[127 140 141]/255,'filled','HandleVisibility','off');
-% scatter(cor_D(:,1),cor_D(:,2),8,[127 140 141]/255,'filled');
-
-
 coefficient=[];           %拟合得到的二次曲线的系数
 %升轨拟合
 cor=Ascending_data.coordinate;
@@ -33,11 +27,6 @@ p=polyfit(xD,yD,2);
 yD=p(1).*xD.*xD+p(2).*xD+p(3);  %拟合后的经度
 coefficient=[coefficient;p];
 
-
-
-%  调试 画出拟合后的升轨曲线和降轨曲线
-% plot(yA,xA,'Color',[241 64 64]/255,'LineWidth',3);
-% plot(yD,xD,'Color',[26 111 223]/255,'LineWidth',3);
 
 %调试 绘制拟合的升轨曲线和降轨曲线的一部分
 % yA1=yA(find(yA>204&yA<207));
@@ -76,12 +65,21 @@ end
 % %    CrossOverPointOutput=[];
 % %    return;
 % end
+
+% 调试 画出升降轨的卫星脚点的原始分布
+scatter(cor_A(:,1),cor_A(:,2),10,[127 140 141]/255,'filled','HandleVisibility','off');  
+scatter(cor_D(:,1),cor_D(:,2),10,[127 140 141]/255,'filled');  %color [0 140 141]/255
+%  调试 画出拟合后的升轨曲线和降轨曲线
+plot1 = plot(yA,xA,'-.','Color',[0 0 0]/255,'LineWidth',2,'HandleVisibility','off');
+plot2 =plot(yD,xD,'-.','Color',[0 0 0]/255,'LineWidth',2);
 % 调试 画出拟合后的概略点位置
-% scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'d','k','filled');
+scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'r','d','filled');
+
+
 
 %判断3
 %若粗略位置是因为曲线过短导致的错误解，通过该点与升降轨的纬度差进行剔除
- min1=min(abs(cor_A(:,2)-CursoryCrossPoint(2)))+min(abs(cor_D(:,2)-CursoryCrossPoint(2)));
+min1=min(abs(cor_A(:,2)-CursoryCrossPoint(2)))+min(abs(cor_D(:,2)-CursoryCrossPoint(2)));
 if min1>0.1  %纬度差的最小值
     CrossOverPointOutput=[];
     return;
@@ -93,9 +91,8 @@ end
 %% 二、求精确位置
 
 %方法一 迭代法
-CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,5);
-
-%     scatter(CrossOverPoint(1),CrossOverPoint(2),88,'p','k','filled');
+CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,35);
+scatter(CrossOverPoint(1),CrossOverPoint(2),200,'p','k','filled');
 
 %方法二 跨立交叉法
 %1) 自己写的
@@ -116,9 +113,9 @@ CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBo
 %         CrossOverPoint=CrossOver_AMT(in,:);
 %     elseif sum(in)>1   %有多个点在边界内时选取距离插值点最接近的一个点
 %         CrossOver_AMT=CrossOver_AMT(in,:);
-% %         
-% %        hold on;
-% %        scatter(CrossOver_AMT(:,1),CrossOver_AMT(:,2),88,'p','b','filled');
+%         
+%        hold on;
+%        scatter(CrossOver_AMT(:,1),CrossOver_AMT(:,2),88,'p','b','filled');
 %       
 %         dis=zeros(size(CrossOver_AMT,1),1);
 %         for i=1:size(CrossOver_AMT,1)
@@ -140,29 +137,29 @@ CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBo
 %             [dis3,row3]=min(distance([x,y],Top_Cor_D(:,1:2)));
 %             [dis4,row4]=min(distance([x,y],Bot_Cor_D(:,1:2)));  
 %             
-% %             A1=Top_Cor_A(row1,1:2);
-% %             A2=Bot_Cor_A(row2,1:2);
-% %             B1=Top_Cor_D(row3,1:2);
-% %             B2=Bot_Cor_D(row4,1:2);
-% %             
-% %             list=[A1;A2;B1;B2];
-% %             if i==4
-% %             scatter(list(:,1),list(:,2),30,'r');
-% %             end          
+%             A1=Top_Cor_A(row1,1:2);
+%             A2=Bot_Cor_A(row2,1:2);
+%             B1=Top_Cor_D(row3,1:2);
+%             B2=Bot_Cor_D(row4,1:2);
+%             
+%             list=[A1;A2;B1;B2];
+%             if i==4
+%             scatter(list(:,1),list(:,2),30,'r');
+%             end          
 %             dis(i)=mean([dis1,dis2,dis3,dis4]);                            
 %         end
 %         CrossOverPoint=CrossOver_AMT(find(sum(dis,2)==min(sum(dis,2))),:);
 %     end
 % end
 
-
+% 
 %  debug
 % hold on;
-%  scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),88,'p','k','filled');
+% scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),88,'p','k','filled');
 
 % % 优化后的AMT方法
-% CrossOverPoint= AMT(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
-%  scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),88,'p','r','filled');
+CrossOverPoint= AMT(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
+scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),200,'p','b','filled');
 
 %方法三 改进的迭代法
 % Tangent=SolveTangent(CursoryCrossPoint,coefficient);    %求第一次粗略位置的两条切线
@@ -357,9 +354,9 @@ end
     A=[A1;A2];
     B=[B1;B2];
     
-    % useful for debugging        
-%     scatter(A(:,1),A(:,2),30,'b');
-%     scatter(B(:,1),B(:,2),30,'b');  
+%     useful for debugging        
+%     scatter(A(:,1),A(:,2),50,'k','filled');
+%     scatter(B(:,1),B(:,2),50,'k','filled','HandleVisibility','off');  
 
 %     A( A(:,3)>2000| A(:,3)<-55.5|A(:,5)>2,:)=[];
 %     B( B(:,3)>2000| B(:,3)<-55.5|B(:,5)>2,:)=[];

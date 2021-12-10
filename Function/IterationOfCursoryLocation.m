@@ -148,31 +148,30 @@ end
 %% plot for debugging
 
 % Extend coordinates
-x_A=linspace(min(x_A)-0.06,max(x_A)+0.01,10);
-x_D=linspace(min(x_D)-0.06,max(x_D)+0.01,10);
-y_A=coefficient1(1).*x_A+coefficient1(2); 
-y_D=coefficient2(1).*x_D+coefficient2(2); 
+% x_A=linspace(min(x_A)-0.06,max(x_A)+0.01,10);
+% x_D=linspace(min(x_D)-0.06,max(x_D)+0.01,10);
+% y_A=coefficient1(1).*x_A+coefficient1(2); 
+% y_D=coefficient2(1).*x_D+coefficient2(2); 
 
 % Clip raw data
-rowA=SearchClosestValue(cor_A(:,2),CursoryCrossPoint(2));
-rowD=SearchClosestValue(cor_D(:,2),CursoryCrossPoint(2));
+% rowA=SearchClosestValue(cor_A(:,2),CursoryCrossPoint(2));
+% rowD=SearchClosestValue(cor_D(:,2),CursoryCrossPoint(2));
 
 % Plot 
-scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'d','k','filled');
-scatter(CrossOverPoint(1),CrossOverPoint(2),100,'p','k','filled','HandleVisibility','off');
-scatter(cor_A(rowA-30:rowA+30,1),cor_A(rowA-30:rowA+30,2),8,[127 140 141]/255,'filled','HandleVisibility','off');
-scatter(cor_D(rowD-30:rowD+30,1),cor_D(rowD-30:rowD+30,2),8,[127 140 141]/255,'filled');
-scatter(extendData_D(:,1),extendData_D(:,2),20,'MarkerFaceColor','k','MarkerEdgeColor','k','HandleVisibility','off');
-scatter(extendData_A(:,1),extendData_A(:,2),20,'MarkerFaceColor','k','MarkerEdgeColor','k');
-plot(y_A,x_A,'--','Color',[0 0 0]/255,'LineWidth',1,'HandleVisibility','off');
-plot(y_D,x_D,'--','Color',[0 0 0]/255,'LineWidth',1,'HandleVisibility','off');
+% scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'d','k','filled');
+% scatter(CrossOverPoint(1),CrossOverPoint(2),100,'p','k','filled','HandleVisibility','off');
+% scatter(cor_A(rowA-30:rowA+30,1),cor_A(rowA-30:rowA+30,2),8,[127 140 141]/255,'filled','HandleVisibility','off');
+% scatter(cor_D(rowD-30:rowD+30,1),cor_D(rowD-30:rowD+30,2),8,[127 140 141]/255,'filled');
+% scatter(extendData_D(:,1),extendData_D(:,2),20,'MarkerFaceColor','k','MarkerEdgeColor','k','HandleVisibility','off');
+% scatter(extendData_A(:,1),extendData_A(:,2),20,'MarkerFaceColor','k','MarkerEdgeColor','k');
+% plot(y_A,x_A,'--','Color',[0 0 0]/255,'LineWidth',1,'HandleVisibility','off');
+% plot(y_D,x_D,'--','Color',[0 0 0]/255,'LineWidth',1,'HandleVisibility','off');
 
 % Set
-set(gca,'fontsize',15);
-xlabel('经度/(°)','FontSize',15);
-ylabel('纬度/(°)','FontSize',15);
-legend('概略位置','数据点','拟合点');
-
+% set(gca,'fontsize',16);
+% xlabel('经度/(°)','FontSize',16);
+% ylabel('纬度/(°)','FontSize',16);
+% legend('概略位置','数据点','拟合点');
 
 %% 
 % 迭代过程中是否每一次迭代都重新确定迭代点数的开关 

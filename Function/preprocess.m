@@ -13,6 +13,7 @@ for i=1:sizeOfCoor
        dis(i,2)=SphereDist([Coor(i,1),Coor(i,2)],[Coor(i+1,1),Coor(i+1,2)])*1000;   %与后一点的距离
     end
 end
+
 sd=std(dis(2:end,1));
 meanVal=mean(dis(2:end,1));
 threshold=meanVal+3*sd;
