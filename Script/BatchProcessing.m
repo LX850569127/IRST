@@ -55,61 +55,62 @@
 %     fileName=strcat(variate_cut,'.mat');
 %     filePath=strcat('X:\Xiao\Master\Project\Crossover\Variate\Ronne\',num2str(year),'\Cut\');
 %     save([filePath,fileName],variate_cut);
-% %     clear -regexp ^Cut;  %清除已经保存的裁剪数据变量
+% %   clear -regexp ^Cut;  %清除已经保存的裁剪数据变量
 % end
 
 % 二、升降轨数据分离
-% year=2013;
-% region="Ronne";
-% 
-% for i=11:11   %Month 
-%     
-%     Ascend=[];
-%     Descend=[];
-%     
-%     if i<10
-%         variate_cut=strcat('Cut',num2str(year),'0',num2str(i));
-%         variate_A=strcat(region,'_A',num2str(year),'0',num2str(i));
-%         variate_D=strcat(region,'_D',num2str(year),'0',num2str(i));
-%     else 
-%        variate_cut=strcat('Cut',num2str(year),num2str(i));
-%        variate_A=strcat(region,'_A',num2str(year),num2str(i));
-%        variate_D=strcat(region,'_D',num2str(year),num2str(i));
-%     end  
-%     
-% %     load(variate_cut);
-%     Cut=eval(variate_cut);
-%     
-%     for j=1:size(Cut,1)
-%         cor=Cut(j).coordinate;
-% %           对数据进行预处理
-% 
-%         orbitNum=Cut(j).orbitNum;
-%         if size(cor,1)>5   %剔除点数较少的轨迹
-%          cor=preprocess(cor);
-%     %     判断轨道的升降轨(第一点的纬度与最后一点的纬度进行比较)
-%             if(cor(1,2)<cor(end,2))
-%                 ascending_flag='A';
-%                 trackInfo = struct('coordinate',cor,'ascending_flag',{ascending_flag},'orbitNum',orbitNum);
-%                 Ascend=[Ascend;trackInfo];
-%             else 
-%                 ascending_flag='D';
-%                 trackInfo = struct('coordinate',cor,'ascending_flag',{ascending_flag},'orbitNum',orbitNum);
-%                 Descend=[Descend;trackInfo]; 
-%             end
-%         end
-%     end
-%     
-%    eval(strcat(variate_A ,'=Ascend'));
-%    eval(strcat(variate_D ,'=Descend'));
-%    
-%    fileNameA=strcat(variate_A,'.mat');
-%    fileNameD=strcat(variate_D,'.mat');
-%    storagePathA=strcat('X:\Xiao\Master\Project\Crossover\Variate\',region,'\2013\Ascend\');
-%    storagePathD=strcat('X:\Xiao\Master\Project\Crossover\Variate\',region,'\2013\Descend\');
-%    save([char(storagePathA),char(fileNameA)],variate_A);
-%    save([char(storagePathD),char(fileNameD)],variate_D);
-% end
+year=2013;
+region="Ronne";
+
+for i=11:11   %Month 
+    
+    Ascend=[];
+    Descend=[];
+    
+    if i<10
+        variate_cut=strcat('Cut',num2str(year),'0',num2str(i));
+        variate_A=strcat(region,'_A',num2str(year),'0',num2str(i));
+        variate_D=strcat(region,'_D',num2str(year),'0',num2str(i));
+    else 
+       variate_cut=strcat('Cut',num2str(year),num2str(i));
+       variate_A=strcat(region,'_A',num2str(year),num2str(i));
+       variate_D=strcat(region,'_D',num2str(year),num2str(i));
+    end  
+    
+%     load(variate_cut);
+    Cut=eval(variate_cut);
+    
+    for j=1:size(Cut,1)
+        cor=Cut(j).coordinate;
+%           对数据进行预处理
+
+        orbitNum=Cut(j).orbitNum;
+        if size(cor,1)>5           %剔除点数较少的轨迹
+        cor=preprocess(cor);       %数据预处理，剔除偏离较大的轨迹点 
+
+%   判断轨道的升降轨(第一点的纬度与最后一点的纬度进行比较)
+            if(cor(1,2)<cor(end,2))
+                ascending_flag='A';
+                trackInfo = struct('coordinate',cor,'ascending_flag',{ascending_flag},'orbitNum',orbitNum);
+                Ascend=[Ascend;trackInfo];
+            else 
+                ascending_flag='D';
+                trackInfo = struct('coordinate',cor,'ascending_flag',{ascending_flag},'orbitNum',orbitNum);
+                Descend=[Descend;trackInfo]; 
+            end
+        end
+    end
+    
+   eval(strcat(variate_A ,'=Ascend'));
+   eval(strcat(variate_D ,'=Descend'));
+   
+   fileNameA=strcat(variate_A,'.mat');
+   fileNameD=strcat(variate_D,'.mat');
+   storagePathA=strcat('X:\Xiao\Master\Project\Crossover\Variate\',region,'\2013\Ascend\');
+   storagePathD=strcat('X:\Xiao\Master\Project\Crossover\Variate\',region,'\2013\Descend\');
+   save([char(storagePathA),char(fileNameA)],variate_A);
+   save([char(storagePathD),char(fileNameD)],variate_D);
+end
 
 %% 四、求交叉点的精确位置  Ross冰架
 % load('boundary')
