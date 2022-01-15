@@ -3,40 +3,38 @@ function [Output_TrackInfo] = NcFileRead(FolderPath)
 %Function：读取同一个文件夹下所有nc文件里的坐标、高程、时间信息
 %Input：folderPath(存储需要读取的所有nc文件的文件夹)
 %Output：Output_TrackInfo(每行对应一个nc文件的信息，且从左往右依次是经度、纬度、高程、时间)
-    filesPath = dir(fullfile(FolderPath,'*.nc'));  
-    fileNumber=size(filesPath);
-    Output_TrackInfo=[]; %定义输出坐标、高程以及时间信息的矩阵
-    %1)读取经纬度坐标、高程信息、时间并进行存储
-    bar=waitbar(0,'正在读取数据');
-    for i=1:fileNumber(1)
+%说明：由于GDR数据一个而文件中除当前轨道号的数据还存在前后轨道号的部分数据，需要根据头文件中的观测时间对数据进行裁剪
+
+filesPath = dir(fullfile(FolderPath,'*.nc'));  
+fileNumber=size(filesPath);
+Output_TrackInfo=[]; %定义输出坐标、高程以及时间信息的矩阵
+%1)读取经纬度坐标、高程信息、时间并进行存储
+    
+ parfor i=1:fileNumber(1)
         Inpath=strcat(FolderPath,'\',filesPath(i,:).name);
         
         lat = ncread(Inpath,'lat_poca_20_ku'); 
         lon = ncread(Inpath,'lon_poca_20_ku');
         time =ncread(Inpath,'time_20_ku');
-        height=ncread(Inpath,'height_1_20_ku');
-        
+        height=ncread(Inpath,'height_1_20_ku');      
         Attribute=ncinfo(Inpath).Attributes;     %文件头信息
-        
-        orbitNum=Attribute(13).Value;     %读取轨道号
+       
+        orbitNum=Attribute(13).Value;                     %absolute orbit number
         first_record_time=TAI2Sec(Attribute(27).Value);   
         last_record_time=TAI2Sec(Attribute(28).Value);    %读取数据记录时间用于数据裁剪
         
         [value,fist_row]=min(abs(time-first_record_time));
         [value,last_row]=min(abs(time-last_record_time));
-        
+                                             
         %截取观测时间内的数据
         lat=lat(fist_row:last_row);    
         lon=lon(fist_row:last_row);
         time=time(fist_row:last_row);
         height=height(fist_row:last_row);
-          
-        str=['正在读取数据',num2str(i/fileNumber(1)*100),'%'];
-        waitbar(i/fileNumber(1),bar,str);
+   
         trackInfo=struct('longtitude',lon,'latitude',lat,'time',time,'height',height,'orbitNum',orbitNum);  %存储该轨道对应的所有坐标、高程以及时间信息
         Output_TrackInfo=[Output_TrackInfo;trackInfo];
-    end
-    close(bar);
+ end
 end
 
 function [Sec] = TAI2Sec(TAI)

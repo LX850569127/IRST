@@ -56,12 +56,12 @@
 % CP2_A1301_D1301=AllCrossOverPoint;
 All_CP=[];   %用于保存所有的经过误差处理后的点 
 BiasStatistics=[];
-for j=1:12
+for j=12:12
     month=num2str(j);
     if j<10
-    VariateName_CP=strcat('CP2', '_A130',month,'_D130',month); 
+    VariateName_CP=strcat('CP', '_A110',month,'_D110',month); 
     else
-          VariateName_CP=strcat('CP2', '_A13',month,'_D13',month); 
+          VariateName_CP=strcat('CP', '_A11',month,'_D11',month); 
     end
     CP=eval(VariateName_CP);
     ADBias=[];
@@ -83,15 +83,16 @@ for j=1:12
     All_CP=[All_CP;Bias];
  
       meanBias_PDOP=mean(All_CP(:,4));
-%       All_CP(abs(All_CP(:,3))>2,:)=[];      %认定超过2m的不符值为粗差，进行剔除
+      All_CP(abs(All_CP(:,3))>2,:)=[];      %认定超过2m的不符值为粗差，进行剔除
 %       All_CP(:,3)=abs(All_CP(:,3));  
-%       std_Bias=std(All_CP(:,3));
-%       
-%       All_CP(abs(All_CP(:,3)-mean(All_CP(:,3)))>=3*std_Bias,:)=[];  %3倍中误差剔除
-%       RMS=sqrt(sum(All_CP(:,3).*All_CP(:,3))/size(All_CP,1))*100;   %处理后均方根
-%       meanBias=mean(All_CP(:,3))*100; 
-     
-%     pick=ScreenCoordinatasRegularly(All_CP,[167.3,194.89],[-82.45,-78.92]);
+      std_Bias=std(All_CP(:,3));
+             
+      All_CP(abs(All_CP(:,3)-mean(All_CP(:,3)))>=3*std_Bias,:)=[];  %3倍中误差剔除
+      All_CP(abs(All_CP(:,3))>1,:)=[];
+      RMS=sqrt(sum(All_CP(:,3).*All_CP(:,3))/size(All_CP,1))*100;   %处理后均方根
+      meanBias=mean(All_CP(:,3))*100; 
+      
+%     pick=ScreenCoordinatasRegularly(All_CP,[167.3,194.89],[-82.45,-78.92]);获取指定区域的评估值
 %     pick_PDOP=mean(pick(:,4))*100; 
 end    
 %%

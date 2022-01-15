@@ -19,7 +19,7 @@ OutCoor=[];
 sizeOfCoor=size(Coor,1);
 
 numOfSegs=4;                                 % number of the segments after segmentation.
-numOfPoints=round(sizeOfCoor/numOfSegs);     % number of the points of every segment.
+numOfPoints=floor(sizeOfCoor/numOfSegs);     % number of the points of every segment.
 coorCell=cell(numOfSegs,1);
 outCoorCell=cell(numOfSegs,1);               % output coordinate cell. 
 

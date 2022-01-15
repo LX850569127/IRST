@@ -67,13 +67,13 @@ end
 % end
 
 % 调试 画出升降轨的卫星脚点的原始分布
-scatter(cor_A(:,1),cor_A(:,2),10,[127 140 141]/255,'filled','HandleVisibility','off');  
-scatter(cor_D(:,1),cor_D(:,2),10,[127 140 141]/255,'filled');  %color [0 140 141]/255
+% scatter(cor_A(:,1),cor_A(:,2),10,[127 140 141]/255,'filled','HandleVisibility','off');  
+% scatter(cor_D(:,1),cor_D(:,2),10,[127 140 141]/255,'filled');  %color [0 140 141]/255
 %  调试 画出拟合后的升轨曲线和降轨曲线
-plot1 = plot(yA,xA,'-.','Color',[0 0 0]/255,'LineWidth',2,'HandleVisibility','off');
-plot2 =plot(yD,xD,'-.','Color',[0 0 0]/255,'LineWidth',2);
+% plot1 = plot(yA,xA,'-.','Color',[0 0 0]/255,'LineWidth',2,'HandleVisibility','off');
+% plot2 =plot(yD,xD,'-.','Color',[0 0 0]/255,'LineWidth',2);
 % 调试 画出拟合后的概略点位置
-scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'r','d','filled');
+% scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'r','d','filled');
 
 
 
@@ -91,8 +91,8 @@ end
 %% 二、求精确位置
 
 %方法一 迭代法
-CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,35);
-scatter(CrossOverPoint(1),CrossOverPoint(2),200,'p','k','filled');
+% CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,35);
+% scatter(CrossOverPoint(1),CrossOverPoint(2),200,'p','k','filled');
 
 %方法二 跨立交叉法
 %1) 自己写的
@@ -159,7 +159,7 @@ scatter(CrossOverPoint(1),CrossOverPoint(2),200,'p','k','filled');
 
 % % 优化后的AMT方法
 CrossOverPoint= AMT(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
-scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),200,'p','b','filled');
+% scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),200,'p','b','filled');
 
 %方法三 改进的迭代法
 % Tangent=SolveTangent(CursoryCrossPoint,coefficient);    %求第一次粗略位置的两条切线

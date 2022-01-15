@@ -487,16 +487,67 @@
 % end
 
 %% 绘制拟合曲线及概略位置图
+% figure;
+% hold on;
+% box on;
+% set(gca,'fontsize',14);
+% xlabel('Longitude[ ° ]','FontSize',14);
+% ylabel('Latitude[ ° ]','FontSize',14);
+% sizeOfCrossCombinations=size(Combine,1);
+% for j=310:310
+% %     str=[month,'正在计算交叉点',num2str(j/sizeOfCrossCombinations*100),'%'];
+% %     waitbar(j/sizeOfCrossCombinations,bar,str);
+%     CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
+%     AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
+
+
+% end
+
+%% 数据预处理优化测试
+
+% cor=Cut201301(100).coordinate;
+% figure;
+% scatter(cor(:,1),cor(:,2),6,'filled');
+% cor1=preprocess(cor);       %数据预处理，剔除偏离较大的轨迹点 
+% hold on;
+% 
+% C=unique([cor;cor1],'rows'); 
+% Lia = ismember(C,cor1,'rows');
+% d=C(find(Lia==0),:);
+% scatter(d(:,1),d(:,2),25,'r','filled');
+
+% tic 
+% n=200;
+% A=500;
+% a=zeros(n);
+% parfor i=1:n
+%     a(i)=max(abs(eig(rand(A))));
+% end 
+% toc
+
+%%
+% figure;
+% hold on;
+% for i=1:size(Cut201101,1)
+%   temp=Cut201101(i).coordinate;
+%   scatter(temp(:,1),temp(:,2),1,'r','filled');
+% end    
+% plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% for i=1:size(CP2_A1101_D1101,1)
+%   temp=CP2_A1101_D1101(i).coordinate;
+%   scatter(temp(:,1),temp(:,2),10 ,'b','filled');
+% end
+%%
+All_CP=load('CP_1101_1102.txt');
 figure;
+colormap(CustomColormap) 
+plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
 hold on;
-box on;
-set(gca,'fontsize',14);
-xlabel('Longitude[ ° ]','FontSize',14);
-ylabel('Latitude[ ° ]','FontSize',14);
-sizeOfCrossCombinations=size(Combine,1);
-for j=310:310
-%     str=[month,'正在计算交叉点',num2str(j/sizeOfCrossCombinations*100),'%'];
-%     waitbar(j/sizeOfCrossCombinations,bar,str);
-    CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
-    AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
-end
+scatter(All_CP(:,1),All_CP(:,2),15,All_CP(:,3),'filled'); 
+
+% a=load('Ross_5km_Grid_EDIT.dat');
+% scatter(a(:,1),a(:,2),20,'filled'); 
+%格网点绘制
+
+
