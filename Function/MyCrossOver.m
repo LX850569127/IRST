@@ -414,10 +414,12 @@ end
 % 四、结果导出
 % 调试 绘制交叉点的精确位置
 % 为方便比较 导出形成交叉点的升轨轨道号与降轨轨道号 
-orbitNumOfA=Ascending_data.orbitNum;    %升轨轨道号
-orbitNumOfD=Descending_data.orbitNum;   %降轨轨道号
+orbitNum_A=Ascending_data.orbitNum;    %升轨轨道号
+orbitNum_D=Descending_data.orbitNum;   %降轨轨道号
 altitude=[altitude_A,time_A;altitude_D,time_D];
-CrossOverPointOutput= struct('coordinate',CrossOverPoint,'altitude',altitude,'orbitNum',[orbitNumOfA,orbitNumOfD],'PDOP',PDOP); 
+CrossOverPointOutput= struct('coordinate',CrossOverPoint, 'orbitNum_A',orbitNum_A, 'orbitNum_D',orbitNum_D,...
+'altitude_A',altitude_A,'altitude_D',altitude_D,'time_A',time_A,'time_D',time_D,...
+  'PDOP',PDOP); 
 %%
 end
 

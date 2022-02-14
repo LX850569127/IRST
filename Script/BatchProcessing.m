@@ -1,13 +1,14 @@
 % clear;
+
+%% Preferences
 Region='Ross';                                                 % Input experimental region
 DataPath='Y:\CryoSat-2 Data\Baseline D\SIR_GDR\';              % Data Path
 StoragePath=strcat('E:\Sync\Master\Project\Crossover\Variate\',Region,'\');   
 load(strcat(Region,'Boundary.mat'));
 
-
 %% 一、数据读取及裁剪
-% year=2011;
-% for i=3:12  %月份
+% year=2012;
+% for i=2:6  %月份
 %     trackInfoGather=[];
 %     if i<10
 %         folderPath = strcat(DataPath, num2str(year),'\0', num2str(i));
@@ -40,8 +41,8 @@ load(strcat(Region,'Boundary.mat'));
 %                 %罗斯冰架左下方区需进行的裁剪
 %                  if (size(range_Coordinate)~=0)
 %                   for k=1:size(range_Coordinate)
-%                      if  range_Coordinate(k,2)<-83    %根据该直线对数据左下方数据区域进行裁切,仅
-%                           y=range_Coordinate(k,1)*(-0.06717)-72.3805;  
+%                      if  range_Coordinate(k,2)<-83                        %根据该直线对数据左下方数据区域进行裁切
+%                           y=range_Coordinate(k,1)*(-0.06717)-72.3805;     %Line function for clipping
 %                           if range_Coordinate(k,2)<y
 %                               range_Coordinate(k,:)=0;
 %                           end
@@ -54,21 +55,23 @@ load(strcat(Region,'Boundary.mat'));
 %                  warning('Unexpected Region');
 %          end
 %          
-%         if (size(range_Coordinate,1)>9)
+%         if (size(range_Coordinate,1)>9)       
 %             trackInfo = struct('coordinate',range_Coordinate,'orbitNum',orbitNum);
 %             trackInfoGather=[trackInfoGather;trackInfo];                                %粗筛后的坐标数据
 %         end
 %         eval([variate_cut '=trackInfoGather']);
-%    
-%     end
-% %     clear raw;         %清除原始数据变量
-%   
+%     end    
+%     
+% %   clear raw;         %清除原始数据变量
 %     fileName=strcat(variate_cut,'.mat');
 %     filePath=strcat(StoragePath,num2str(year),'\Cut\');
+%     if ~exist(filePath,'dir')
+%         mkdir(filePath)
+%     end
 %     save([filePath,fileName],variate_cut);
 %     
 % %   clear -regexp ^Cut;  %清除已经保存的裁剪数据变量
-% end
+%  end
 % 
 % % 二、升降轨数据分离
 % year=2011;
@@ -129,9 +132,41 @@ load(strcat(Region,'Boundary.mat'));
 
 %% 三、求交叉点的精确位置  Ross冰架
 
+Region="Ross";     
+Ascend=["201101","201102","201103","201104","201105","201106"];
+Descend=["201107","201108","201109","201110","201111","201112"];
+
+for i=1:size(Ascend,1)
+    %load and name 
+    name_A=strcat(Region,'_A',Ascend(i));
+    name_D=strcat(Region,'_D',Descend(i));
+    name_CP=strcat(Region,'_A',Ascend(i),'_D',Descend(i));
+    load(name_A);  
+    load(name_D);  
+    % sove crossovers 
+%     couple=JudgeCrossPoint(eval(name_A),eval(name_D));
+%     sizeOfCouple=size(couple,1);
+%     corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
+%         'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
+%     corssOvers=repmat(corssOver,[sizeOfCouple 1]);
+%     ind=1;
+%     for j=1:sizeOfCouple
+%         out= MyCrossOver(couple(j,1),couple(j,2),Boundary);
+%         if ~isempty(out)
+%             corssOvers(ind)=out;
+%             ind = ind+1;
+%         end
+%     end
+%     corssOvers=corssOvers(1:ind-1);
+    %Save 
+    eval([name_CP '=corssOvers']);
+    fileName=strcat(variateName,'.mat');
+    save([StoragePath,num2str(year),'\CP\',fileName],variateName); 
+end
+
 year=2011;
 % bar=waitbar(0,'正在计算交叉点');    %进度条
-for k=3:12 %月份
+for k=1:12 %月份
     
 % str=['正在计算交叉点',num2str(k),'月'];
 % waitbar(k/12,bar,str);

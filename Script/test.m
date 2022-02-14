@@ -499,8 +499,6 @@
 % %     waitbar(j/sizeOfCrossCombinations,bar,str);
 %     CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
 %     AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
-
-
 % end
 
 %% 数据预处理优化测试
@@ -526,28 +524,27 @@
 % toc
 
 %%
-% figure;
-% hold on;
-% for i=1:size(Cut201101,1)
-%   temp=Cut201101(i).coordinate;
-%   scatter(temp(:,1),temp(:,2),1,'r','filled');
-% end    
-% plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
-% hold on;
-% for i=1:size(CP2_A1101_D1101,1)
-%   temp=CP2_A1101_D1101(i).coordinate;
-%   scatter(temp(:,1),temp(:,2),10 ,'b','filled');
-% end
+figure;
+hold on;
+for i=1:size(Cut201101,1)
+  temp=Cut201101(i).coordinate;
+  scatter(temp(:,1),temp(:,2),1,'r','filled');
+end    
+plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+hold on;
+for i=1:size(CP2_A1101_D1101,1)
+  temp=CP2_A1101_D1101(i).coordinate;
+  scatter(temp(:,1),temp(:,2),10 ,'b','filled');
+end
 %%
-All_CP=load('CP_1101_1102.txt');
+All_CP=load('CP_2013.txt');
 figure;
 colormap(CustomColormap) 
 plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
 hold on;
-scatter(All_CP(:,1),All_CP(:,2),15,All_CP(:,3),'filled'); 
-
+scatter(All_CP(:,1),All_CP(:,2),15,abs(All_CP(:,3)),'filled'); 
 % a=load('Ross_5km_Grid_EDIT.dat');
 % scatter(a(:,1),a(:,2),20,'filled'); 
 %格网点绘制
 
-
+All_CP(:,3)=abs(All_CP(:,3));
