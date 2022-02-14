@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" modified="2022-01-06T12:06:57.691Z" agent="5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36" etag="A39K0H3KpkVFrjyJ_u0t" version="16.2.2" type="github">
+  <diagram id="6a731a19-8d31-9384-78a2-239565b7b9f0" name="Page-1">
+    <mxGraphModel dx="1422" dy="1308" grid="1" gridSize="16" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-86" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=14;fontColor=default;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="M5qcfiASDxKdmmBG2hC3-76" target="M5qcfiASDxKdmmBG2hC3-77">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="216" y="-476" as="sourcePoint" />
+            <mxPoint x="216" y="-426" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="222" y="-458" />
+              <mxPoint x="222" y="-458" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-76" value="&lt;b style=&quot;font-size: 12px&quot;&gt;&lt;font face=&quot;Noto Sans Simplified Chinese&quot; data-font-src=&quot;https://fonts.googleapis.com/css?family=Noto+Sans+Simplified+Chinese&quot; style=&quot;font-size: 14px&quot;&gt;数据预处理&lt;/font&gt;&lt;/b&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="166" y="-522" width="112" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-77" value="&lt;font face=&quot;Noto Sans Simplified Chinese&quot;&gt;&lt;b&gt;轨道筛选&lt;/b&gt;&lt;/font&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="166" y="-442" width="112" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-82" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=14;fontColor=default;" edge="1" parent="1" source="M5qcfiASDxKdmmBG2hC3-78" target="M5qcfiASDxKdmmBG2hC3-79">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-78" value="&lt;p&gt;&lt;span style=&quot;font-family: &amp;#34;noto sans simplified chinese&amp;#34;&quot;&gt;&lt;font style=&quot;font-size: 10px&quot;&gt;卫星测高数据读取&lt;/font&gt;&lt;/span&gt;&lt;/p&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="318" y="-576" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-83" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontFamily=Helvetica;fontSize=14;fontColor=default;" edge="1" parent="1" source="M5qcfiASDxKdmmBG2hC3-79" target="M5qcfiASDxKdmmBG2hC3-80">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-79" value="&lt;span style=&quot;font-family: &amp;#34;noto sans simplified chinese&amp;#34; ; font-size: 10px&quot;&gt;实验区域数据裁剪&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="318" y="-514" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-80" value="&lt;span style=&quot;font-family: &amp;#34;noto sans simplified chinese&amp;#34;&quot;&gt;升降轨数据分离&lt;/span&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="318" y="-458" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-87" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;fontFamily=Helvetica;fontSize=14;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="278" y="-576" width="20" height="156" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-88" value="&lt;p style=&quot;font-size: 13px&quot;&gt;&lt;font style=&quot;font-size: 13px&quot;&gt;&lt;font style=&quot;font-size: 13px&quot;&gt;&lt;b&gt;曲线拟合&lt;/b&gt;&lt;/font&gt;&lt;/font&gt;&lt;/p&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientDirection=north;align=center;" vertex="1" parent="1">
+          <mxGeometry x="160" y="-362" width="123" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-89" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Helvetica;fontSize=14;fontColor=default;" edge="1" parent="1" source="M5qcfiASDxKdmmBG2hC3-77" target="M5qcfiASDxKdmmBG2hC3-88">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="232.00000000000023" y="-460" as="sourcePoint" />
+            <mxPoint x="232.06400000000008" y="-426.7819999999997" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-90" value="&lt;p style=&quot;font-size: 13px&quot;&gt;&lt;b&gt;精确位置求解&lt;/b&gt;&lt;/p&gt;" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientDirection=north;align=center;" vertex="1" parent="1">
+          <mxGeometry x="160" y="-244" width="123" height="48" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-93" value="&lt;font face=&quot;noto sans simplified chinese&quot;&gt;初始概略位置&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="321" y="-356" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-94" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;fontFamily=Helvetica;fontSize=14;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="278" y="-298" width="20" height="144" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-97" value="&lt;font face=&quot;noto sans simplified chinese&quot;&gt;基于概略位置确定算法运行区域&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="321" y="-298" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-98" value="&lt;font face=&quot;noto sans simplified chinese&quot;&gt;指定区域进行快速排斥与跨立实验&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="321" y="-244" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-99" value="&lt;font face=&quot;noto sans simplified chinese&quot;&gt;多个交叉点中选取最佳交叉点位置&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=12;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" vertex="1" parent="1">
+          <mxGeometry x="321" y="-189" width="120" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-100" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontFamily=Helvetica;fontSize=14;fontColor=default;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="M5qcfiASDxKdmmBG2hC3-88" target="M5qcfiASDxKdmmBG2hC3-90">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="238" y="-380" as="sourcePoint" />
+            <mxPoint x="237.5" y="-346" as="targetPoint" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-103" value="" style="endArrow=classic;html=1;rounded=0;fontFamily=Helvetica;fontSize=13;fontColor=default;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="272" y="-338.33" as="sourcePoint" />
+            <mxPoint x="320" y="-338" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="M5qcfiASDxKdmmBG2hC3-104" value="交点" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Helvetica;fontSize=6;fontColor=default;strokeColor=default;strokeWidth=2;fillColor=none;gradientDirection=north;" connectable="0" vertex="1" parent="M5qcfiASDxKdmmBG2hC3-103">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
