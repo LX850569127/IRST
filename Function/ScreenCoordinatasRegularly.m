@@ -1,7 +1,7 @@
 
 function [Output_Coordinates] = ScreenCoordinatasRegularly(Input_Coordinates,Longtitude_Range,Latitude_Range)
 %Function：筛选规则范围的经纬度坐标 
-%Input：1.Input_Coordinates(待筛选的坐标)、2.Longtitude_Range(经度筛选范围,[min,max])3.Latitude_Range(纬度筛选范围[min,max])
+%Input：1.Input_Coordinates(待筛选的坐标, the first column is longitude, the secend column is latitude.)、2.Longtitude_Range(经度筛选范围,[min,max])3.Latitude_Range(纬度筛选范围[min,max])
 %Output：Output_Coordinates(筛选完成后的坐标,没有满足条件的坐标时输出空矩阵)
 
 Output_Coordinates=[];

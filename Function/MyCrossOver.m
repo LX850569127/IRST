@@ -361,7 +361,7 @@ end
 %     A( A(:,3)>2000| A(:,3)<-55.5|A(:,5)>2,:)=[];
 %     B( B(:,3)>2000| B(:,3)<-55.5|B(:,5)>2,:)=[];
     
-   if sum(A(:,5)>25)+ sum(B(:,5)>25)>0
+   if sum(A(:,3)>25)+ sum(B(:,3)>25)>0
         CrossOverPointOutput=[];
         return;
    end
@@ -387,6 +387,7 @@ end
     else
         altitude_A=A(3);  %唯一值
     end
+    
     % 降轨插值
      if size(B,1)>1
         altitude_D=B1(3)+(B2(3)-B1(3))*(y-B1(2))/(B2(2)-B1(2));   %根据纬度

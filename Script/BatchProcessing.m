@@ -7,75 +7,76 @@ StoragePath=strcat('E:\Sync\Master\Project\Crossover\Variate\',Region,'\');
 load(strcat(Region,'Boundary.mat'));
 
 %% 一、数据读取及裁剪
-% year=2012;
-% for i=2:6  %月份
-%     trackInfoGather=[];
-%     if i<10
-%         folderPath = strcat(DataPath, num2str(year),'\0', num2str(i));
-%         variate_cut=strcat('Cut',num2str(year),'0', num2str(i));
-%     else 
-%         folderPath = strcat(DataPath, num2str(year),'\', num2str(i));
-%        variate_cut=strcat('Cut',num2str(year), num2str(i));
-%     end 
-%     
-%     raw=NcFileRead(folderPath);   %输出该路径下所有文件的坐标信息
-% 
-%     for j=1:size(raw)             %对raw中每一段轨迹进行裁切，注意有的轨迹裁切后仍有两个弧段的情况
-%         temp=raw(j);
-%         longitude=getfield(temp,'longtitude');
-%         latitude=getfield(temp,'latitude');
-%         height=getfield(temp,'height');
-%         time=getfield(temp,'time');
-%         orbitNum=getfield(temp,'orbitNum');
-%         coor=[longitude,latitude,height,time];
-% 
-%         % 需要根据具体的实验区域来调整拟合区域，在第一步曲线拟合的过程中可以得到更好的拟合结果
-%          switch Region
-%             case 'Ronne' 
-%                 range_Coordinate=ScreenCoordinatasRegularly(coor,[min(Boundary(:,1))-2,max(Boundary(:,1)+2)],... 
-%                 [min(Boundary(:,2))-1.1,max(Boundary(:,2)+1.25)]);     %Ronne ice shelf 
-%             case 'Ross' 
-%                 range_Coordinate=ScreenCoordinatasRegularly(coor,[min(Boundary(:,1))-1.5,max(Boundary(:,1)+1.5)],... 
-%                 [min(Boundary(:,2))-1,max(Boundary(:,2)+1)]);          %Ross ice shelf 
-% 
-%                 %罗斯冰架左下方区需进行的裁剪
-%                  if (size(range_Coordinate)~=0)
-%                   for k=1:size(range_Coordinate)
-%                      if  range_Coordinate(k,2)<-83                        %根据该直线对数据左下方数据区域进行裁切
-%                           y=range_Coordinate(k,1)*(-0.06717)-72.3805;     %Line function for clipping
-%                           if range_Coordinate(k,2)<y
-%                               range_Coordinate(k,:)=0;
-%                           end
-%                      end
-%                   end
-%                  index=find(range_Coordinate(:,1)==0);
-%                  range_Coordinate(index,:)=[];
-%                  end
-%              otherwise
-%                  warning('Unexpected Region');
-%          end
-%          
-%         if (size(range_Coordinate,1)>9)       
-%             trackInfo = struct('coordinate',range_Coordinate,'orbitNum',orbitNum);
-%             trackInfoGather=[trackInfoGather;trackInfo];                                %粗筛后的坐标数据
-%         end
-%         eval([variate_cut '=trackInfoGather']);
-%     end    
-%     
-% %   clear raw;         %清除原始数据变量
-%     fileName=strcat(variate_cut,'.mat');
-%     filePath=strcat(StoragePath,num2str(year),'\Cut\');
-%     if ~exist(filePath,'dir')
-%         mkdir(filePath)
-%     end
-%     save([filePath,fileName],variate_cut);
-%     
-% %   clear -regexp ^Cut;  %清除已经保存的裁剪数据变量
-%  end
-% 
-% % 二、升降轨数据分离
+year=2011;
+for i=1:12  %月份
+    trackInfoGather=[];
+    if i<10
+        folderPath = strcat(DataPath, num2str(year),'\0', num2str(i));
+        variate_cut=strcat('Cut',num2str(year),'0', num2str(i));
+    else 
+        folderPath = strcat(DataPath, num2str(year),'\', num2str(i));
+       variate_cut=strcat('Cut',num2str(year), num2str(i));
+    end 
+    
+    raw=NcFileRead(folderPath);   %输出该路径下所有文件的坐标信息
+
+    for j=1:size(raw)             %对raw中每一段轨迹进行裁切，注意有的轨迹裁切后仍有两个弧段的情况
+        temp=raw(j);
+        longitude=getfield(temp,'longtitude');
+        latitude=getfield(temp,'latitude');
+        height=getfield(temp,'height');
+        time=getfield(temp,'time');
+        orbitNum=getfield(temp,'orbitNum');
+        
+        coor=[longitude,latitude,height,time];
+
+        % 需要根据具体的实验区域来调整拟合区域，在第一步曲线拟合的过程中可以得到更好的拟合结果
+         switch Region
+            case 'Ronne' 
+                intraArea=ScreenCoordinatasRegularly(coor,[min(Boundary(:,1))-2,max(Boundary(:,1)+2)],... 
+                [min(Boundary(:,2))-1.1,max(Boundary(:,2)+1.25)]);     %Ronne ice shelf 
+            case 'Ross' 
+                intraArea=ScreenCoordinatasRegularly(coor,[min(Boundary(:,1))-1.5,max(Boundary(:,1)+1.5)],... 
+                [min(Boundary(:,2))-1,max(Boundary(:,2)+1)]);          %Ross ice shelf 
+
+                %罗斯冰架左下方区需进行的裁剪
+                 if (size(intraArea)~=0)
+                  for k=1:size(intraArea)
+                     if  intraArea(k,2)<-83                        %根据该直线对数据左下方数据区域进行裁切
+                          y=intraArea(k,1)*(-0.06717)-72.3805;     %Line function for clipping
+                          if intraArea(k,2)<y
+                              intraArea(k,:)=0;
+                          end
+                     end
+                  end
+                 index=find(intraArea(:,1)==0);
+                 intraArea(index,:)=[];
+                 end
+             otherwise
+                 warning('Unexpected Region');
+         end
+         
+        if (size(intraArea,1)>9)       
+            trackInfo = struct('coordinate',intraArea(:,1:2),'height',intraArea(:,3),'time',intraArea(:,4),'orbitNum',orbitNum);
+            trackInfoGather=[trackInfoGather;trackInfo];                                %粗筛后的坐标数据
+        end
+        eval([variate_cut '=trackInfoGather']);
+    end    
+    
+%   clear raw;         %清除原始数据变量
+    fileName=strcat(variate_cut,'.mat');
+    filePath=strcat(StoragePath,num2str(year),'\Cut\');
+    if ~exist(filePath,'dir')
+        mkdir(filePath)
+    end
+    save([filePath,fileName],variate_cut);
+    
+%   clear -regexp ^Cut;  %清除已经保存的裁剪数据变量
+ end
+
+%% 二、升降轨数据分离
 % year=2011;
-% for i=12:12   %Month 
+% for i=1:12   %Month 
 %     
 %     Ascend=[];
 %     Descend=[];
@@ -93,22 +94,24 @@ load(strcat(Region,'Boundary.mat'));
 %     load(variate_cut);
 %     Cut=eval(variate_cut);
 %     
-%     for j=1:size(Cut,1)
-%         cor=Cut(j).coordinate;
-% %           对数据进行预处理
-% 
+%     for j=47:size(Cut,1)
+%         coor=Cut(j).coordinate;
+%         height=Cut(j).height;
+%         time=Cut(j).time;
 %         orbitNum=Cut(j).orbitNum;
-%         if size(cor,1)>12          %剔除点数较少的轨迹
-%         cor=preprocess(cor);       %数据预处理，剔除偏离较大的轨迹点 
+%         
+%         if size(coor,1)>15          %剔除点数较少的轨迹
+%         coor=preprocess(coor);       %数据预处理，剔除偏离较大的轨迹点 
 % 
 % %   判断轨道的升降轨(第一点的纬度与最后一点的纬度进行比较)
-%             if(cor(1,2)<cor(end,2))
+%        trackInfo = struct('coordinate',coor,'height',height,'time',time,'orbitNum',orbitNum);
+%             if(coor(1,2)<coor(end,2))
 %                 ascending_flag='A';
-%                 trackInfo = struct('coordinate',cor,'ascending_flag',{ascending_flag},'orbitNum',orbitNum);
+%                 trackInfo.flag_AD={ascending_flag};
 %                 Ascend=[Ascend;trackInfo];
 %             else 
 %                 ascending_flag='D';
-%                 trackInfo = struct('coordinate',cor,'ascending_flag',{ascending_flag},'orbitNum',orbitNum);
+%                 trackInfo.flag_AD={ascending_flag};
 %                 Descend=[Descend;trackInfo]; 
 %             end
 %         end
@@ -132,41 +135,68 @@ load(strcat(Region,'Boundary.mat'));
 
 %% 三、求交叉点的精确位置  Ross冰架
 
-Region="Ross";     
-Ascend=["201101","201102","201103","201104","201105","201106"];
-Descend=["201107","201108","201109","201110","201111","201112"];
+Region='Ross';     
 
-for i=1:size(Ascend,1)
-    %load and name 
+% Continuous period of data
+year_A=2011;
+startMonth_A=1;
+endMonth_A=1;
+
+year_D=2011;
+startMonth_D=1;
+endMonth_D=1;
+
+Ascend=strings([endMonth_A-startMonth_A+1,1]);
+Descend=strings([endMonth_A-startMonth_A+1,1]);
+for i=startMonth_A:endMonth_A
+    if i<10
+        month=strcat('0',num2str(i));    
+    else 
+        month=num2str(i);  
+    end
+    ym_A=strcat(num2str(year_A),month);
+    ym_D=strcat(num2str(year_D),month);
+    Ascend(i-startMonth_A+1)=ym_A;
+    Descend(i-startMonth_A+1)=ym_D;
+end
+
+% Custom period of data
+% Descend=["201101";"201102";"201103";"201104";"201105";"201106"];
+% Ascend=["201201";"201202";"201203";"201204";"201205";"201206"];
+
+for i=1:12
+    % Load and name 
     name_A=strcat(Region,'_A',Ascend(i));
     name_D=strcat(Region,'_D',Descend(i));
     name_CP=strcat(Region,'_A',Ascend(i),'_D',Descend(i));
     load(name_A);  
     load(name_D);  
-    % sove crossovers 
-%     couple=JudgeCrossPoint(eval(name_A),eval(name_D));
-%     sizeOfCouple=size(couple,1);
-%     corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
-%         'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
-%     corssOvers=repmat(corssOver,[sizeOfCouple 1]);
-%     ind=1;
-%     for j=1:sizeOfCouple
-%         out= MyCrossOver(couple(j,1),couple(j,2),Boundary);
-%         if ~isempty(out)
-%             corssOvers(ind)=out;
-%             ind = ind+1;
-%         end
-%     end
-%     corssOvers=corssOvers(1:ind-1);
-    %Save 
-    eval([name_CP '=corssOvers']);
-    fileName=strcat(variateName,'.mat');
-    save([StoragePath,num2str(year),'\CP\',fileName],variateName); 
+    % Solve crossovers 
+    couple=JudgeCrossPoint(eval(name_A),eval(name_D));
+    sizeOfCouple=size(couple,1);
+    corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
+        'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
+    corssOvers=repmat(corssOver,[sizeOfCouple 1]);
+    ind=1;
+    for j=1:sizeOfCouple
+        out= MyCrossOver(couple(j,1),couple(j,2),Boundary);
+        if ~isempty(out)
+            corssOvers(ind)=out;
+            ind = ind+1;
+        end
+    end
+    corssOvers=corssOvers(1:ind-1);
+    % Save 
+    eval(strcat(name_CP,'=corssOvers'));
+    fileName=strcat(name_CP,'.mat');
+    storagePath=strcat('.\Variate\',Region,'\CP\');   %CurrentPath is "..\Crossover"
+    save(strcat(storagePath,fileName),name_CP); 
+    clear -regexp ^Ross; 
 end
 
 year=2011;
 % bar=waitbar(0,'正在计算交叉点');    %进度条
-for k=1:12 %月份
+for k=1:1 %月份
     
 % str=['正在计算交叉点',num2str(k),'月'];
 % waitbar(k/12,bar,str);
