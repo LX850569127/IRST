@@ -361,7 +361,7 @@ end
 %     A( A(:,3)>2000| A(:,3)<-55.5|A(:,5)>2,:)=[];
 %     B( B(:,3)>2000| B(:,3)<-55.5|B(:,5)>2,:)=[];
     
-   if sum(A(:,3)>25)+ sum(B(:,3)>25)>0
+   if sum(A(:,5)>25)+ sum(B(:,5)>25)>0
         CrossOverPointOutput=[];
         return;
    end
@@ -395,16 +395,92 @@ end
         altitude_D=B(3);  %唯一值
      end
     
-     coe=abs(altitude_D-altitude_A);
     
     % useful for debugging     
 %     scatter(A(:,1),A(:,2),30,'b');
 %     scatter(B(:,1),B(:,2),30,'b');  
     
-    %时间任取一个即可
+    %时间任取一个即可，两个点之间的时间差距为0.1s
+    
     time_A=A(1,4);
-    time_D=B(1,4);
+    time_D=B(1,4);   
 
+    
+    % caculating the correction value based on the lineal model
+
+%     if isfield(Ascending_data,'correctionPar')
+%         correctionPar_A=Ascending_data.correctionPar;
+%         if sum(correctionPar_A)~=0
+%             a0_A=correctionPar_A(1);
+%             a1_A=correctionPar_A(2);
+%             delta_h_A=a0_A+a1_A*(time_A-min(cor_A(:,4)));
+%             altitude_A=altitude_A+delta_h_A;
+%         end 
+% 
+%         correctionPar_D=Descending_data.correctionPar;
+%         if sum(correctionPar_D)~=0
+%             a0_D=correctionPar_D(1);
+%             a1_D=correctionPar_D(2);
+%             delta_h_D=a0_D+a1_D*(time_D-min(cor_D(:,4)));
+%             altitude_D=altitude_D+delta_h_D;
+%         end 
+%     end
+
+     % caculating the correction value based on 验后条件平差  
+     
+     A=altitude_A-altitude_D;
+    if isfield(Ascending_data,'correctionPar')
+    par=Ascending_data.correctionPar;   % parameters of the error model 
+    sizeOfPar=size(par,2);
+    s_t=min(cor_A(:,4));
+    e_t=max(cor_A(:,4));
+    d_t=time_A-s_t;
+    w=2*pi/(e_t-s_t);
+    if ~isempty(par)
+        switch sizeOfPar
+            case 1
+                ft_a=par;
+            case 2
+                ft_a=par(1)+par(2)*d_t;
+            case 4
+                ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t);
+            case 6 
+                ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t);
+            case 8
+                ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t)...
+                   +par(7)*cos(3*w*d_t)+par(8)*sin(3*w*d_t);
+        end
+        altitude_A=altitude_A-ft_a;
+    end
+ 
+    par=Descending_data.correctionPar;   % parameters of the error model 
+    sizeOfPar=size(par,2);
+    s_t=min(cor_D(:,4));
+    e_t=max(cor_D(:,4));
+    d_t=time_D-s_t;
+    w=2*pi/(e_t-s_t);
+    if ~isempty(par)
+        switch sizeOfPar
+            case 1
+                ft_d=par;
+            case 2
+                ft_d=par(1)+par(2)*d_t;
+            case 4
+                ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t);
+            case 6 
+                ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t);
+            case 8
+                ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t)...
+                   +par(7)*cos(3*w*d_t)+par(8)*sin(3*w*d_t);
+        end
+        altitude_D=altitude_D-ft_d;
+    end
+ 
+   A=altitude_A-altitude_D;
 %% 
 % hold on;
 % scatter(CrossOverPoint(1),CrossOverPoint(2),100,'p','k','filled');
@@ -417,7 +493,7 @@ end
 % 为方便比较 导出形成交叉点的升轨轨道号与降轨轨道号 
 orbitNum_A=Ascending_data.orbitNum;    %升轨轨道号
 orbitNum_D=Descending_data.orbitNum;   %降轨轨道号
-altitude=[altitude_A,time_A;altitude_D,time_D];
+
 CrossOverPointOutput= struct('coordinate',CrossOverPoint, 'orbitNum_A',orbitNum_A, 'orbitNum_D',orbitNum_D,...
 'altitude_A',altitude_A,'altitude_D',altitude_D,'time_A',time_A,'time_D',time_D,...
   'PDOP',PDOP); 

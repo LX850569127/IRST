@@ -548,3 +548,14 @@ scatter(All_CP(:,1),All_CP(:,2),15,abs(All_CP(:,3)),'filled');
 %格网点绘制
 
 All_CP(:,3)=abs(All_CP(:,3));
+
+
+%% 计算平差有效次数
+CP=Ross_A201101_D201101;
+[altitude_A]={CP(:).altitude_A};
+[altitude_D]={CP(:).altitude_D};
+% beforeAdjust=abs(cell2mat(altitude_A)-cell2mat(altitude_D));
+afterAdjust=abs(cell2mat(altitude_A)-cell2mat(altitude_D));
+success=find(afterAdjust<beforeAdjust);
+failure=find(afterAdjust>beforeAdjust);
+unchanged=find(afterAdjust==beforeAdjust);
