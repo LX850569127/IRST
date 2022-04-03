@@ -1,0 +1,55 @@
+<mxfile host="app.diagrams.net" modified="2022-03-05T10:19:15.633Z" agent="5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36" etag="zKKZB8B74qcOXWur6204" version="16.2.6" type="github">
+  <diagram id="ovzPqcG-DyP0S39nKrrb" name="Page-1">
+    <mxGraphModel dx="2062" dy="698" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-2" style="fontStyle=1;strokeColor=#003366;strokeWidth=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="k9k8rXQCVuNMW-6V4kkh-3" target="k9k8rXQCVuNMW-6V4kkh-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-3" value="&lt;b&gt;未处理的交叉点数据&lt;/b&gt;" style="shape=mxgraph.flowchart.terminator;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="359.5" y="90" width="140" height="43" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-4" value="&lt;font style=&quot;font-size: 14px&quot;&gt;粗差剔除&lt;/font&gt;" style="shape=mxgraph.flowchart.data;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="180" width="159" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-5" value="&lt;font style=&quot;font-size: 14px&quot;&gt;2倍中误差剔除&lt;/font&gt;" style="shape=mxgraph.flowchart.data;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="350" y="260" width="159" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-6" value="exceeding 1.5m is a gross error" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="435.5" y="140" width="210" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-7" style="fontStyle=1;strokeColor=#003366;strokeWidth=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="k9k8rXQCVuNMW-6V4kkh-4" target="k9k8rXQCVuNMW-6V4kkh-5">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="439.5" y="140" as="sourcePoint" />
+            <mxPoint x="439.5" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-8" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;fontSize=14;rotation=90;" vertex="1" parent="1">
+          <mxGeometry x="403" y="286" width="50" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-9" value="整体平差" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="330" y="360" width="90" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-10" value="独立平差" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="435.5" y="360" width="90" height="37" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-11" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.annotation_2;align=left;labelPosition=right;pointerEvents=1;fontSize=14;rotation=-90;" vertex="1" parent="1">
+          <mxGeometry x="402" y="374" width="54" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-12" value="&lt;font style=&quot;font-size: 14px&quot;&gt;粗差和中中误差剔除&lt;/font&gt;" style="shape=mxgraph.flowchart.data;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="348.5" y="450" width="159" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-13" style="fontStyle=1;strokeColor=#003366;strokeWidth=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="k9k8rXQCVuNMW-6V4kkh-12">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="438.3000000000002" y="432.0000000000002" as="sourcePoint" />
+            <mxPoint x="428.5" y="530" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="k9k8rXQCVuNMW-6V4kkh-14" value="&lt;b&gt;最终的交叉点数据&lt;/b&gt;" style="shape=mxgraph.flowchart.terminator;strokeWidth=2;gradientColor=none;gradientDirection=north;fontStyle=0;html=1;" vertex="1" parent="1">
+          <mxGeometry x="363.25" y="530" width="129.5" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
