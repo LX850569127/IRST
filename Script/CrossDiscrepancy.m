@@ -8,16 +8,15 @@ numOfCP=zeros(1,12);
 standard=zeros(1,12);
 
 AllBias=[];
+year=2015;
 
-for j=1:12
-    month=num2str(j);
-    if j<10
-      VariateName_CP=strcat('Ross', '_A20110',month,'_D20110',month); 
-    else
-      VariateName_CP=strcat('Ross', '_A2011',month,'_D2011',month); 
-    end
 
-    CP=eval(VariateName_CP);
+for j=1:12   
+    month=j;
+    ym=strcat(num2str(year),zerosFill(month));
+    name_CP=strcat('Ross', '_A',ym, '_D',ym);
+
+    CP=eval(name_CP);
     Bias=zeros(size(CP,1),3);
     
     for i=1:size(CP,1)        
@@ -33,18 +32,18 @@ for j=1:12
                 Bias(i,:)=[cor,altitude_A-altitude_D];
             end      
     end          
-   
-      CP(abs(Bias(:,3))>1.5,:)=[]; 
-      Bias(abs(Bias(:,3))>1.5,:)=[];            % exceeding 1.5m is a gross error,          
+
+      CP(abs(Bias(:,3))>2,:)=[]; 
+      Bias(abs(Bias(:,3))>2,:)=[];            % exceeding 2m is a gross error,          
       
       rmse=sqrt(mean((Bias(:,3)-0).^2));        % root mean square error
-      
+        
       CP(abs(Bias(:,3))>=2*rmse,:)=[]; 
       Bias(abs(Bias(:,3))>=2*rmse,:)=[]; 
       
-      rms=sqrt(mean((Bias(:,3)).^2));
-      eval(strcat(VariateName_CP,'=CP'));
-      
+%     rms=sqrt(mean((Bias(:,3)).^2));
+
+      eval(strcat(name_CP,'=CP'));   
       meanBias(j)=mean(Bias(:,3))*100; 
       standard(j)=std(Bias(:,3))*100;
       meanOfAbs(j)=mean(abs(Bias(:,3)))*100; 
@@ -52,7 +51,6 @@ for j=1:12
       AllBias=[AllBias;Bias];
       
 end    
-
 
 adj=max(AllBias(:,3));
 mean(standard)

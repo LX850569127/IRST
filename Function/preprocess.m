@@ -15,6 +15,7 @@ function [OutCoor] = preprocess(Coor)
 % If both the front-distance and theback-distance are greater than 3 RMSE, 
 % this point deviates far from the track and is removed as a gross error.
 %%
+deletedPoint=[];         %用于记录剔除后的点，存储剔除后的点在原坐标中的索引
 OutCoor=[];
 sizeOfCoor=size(Coor,1);
 
@@ -65,6 +66,7 @@ for i=1:numOfSegs
 %     dis(2:end-1,:)=[adjDis(1:end-1),adjDis(2:end)];
 %%
     [j]=find(dis(:,1)>=threshold&dis(:,2)>=threshold);
+%     deletedPoint=[deletedPoint;tempCoor(j,:)];% 输出被剔除掉的点 
     tempCoor(j,:)=[];
     outCoorCell{i,1}=tempCoor;
 end
@@ -72,6 +74,18 @@ end
 for i=1:numOfSegs
     OutCoor=[OutCoor;outCoorCell{i,1}];
 end 
+
+% 调试
+% figure('color','w')
+% hold on;
+% box on;
+% scatter(OutCoor(:,1),OutCoor(:,2),12,'filled','b');
+% scatter(deletedPoint(:,1),deletedPoint(:,2),30,'filled','r');
+% legend('Data Points','Deleted Points');
+% xlabel('Longitude');
+% ylabel('Latitude');
+% set(gca,'fontsize',14);
+% close all;
 
 end
 

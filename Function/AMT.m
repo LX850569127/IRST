@@ -1,17 +1,20 @@
 function [OutputPoint] = AMT(CorA,CorD,InputPoint,Boundary)
 % AMT工具求解交叉点调用及优化
-% CorA:升轨的所有数据点,CorD:降轨的所有数据点，InputPoint:叉点概略位置
+% CorA:升轨的所有数据点,CorD:降轨的所有数据点，InputPoint:交叉点概略位置
 % OutputPoint:交叉点精确位置，不存在时输出为空
 %% 
 %对升、降轨进行裁切，以提高运行速度
 
 LonRange=[InputPoint(1)-1.5,InputPoint(1)+1.5];       %经度范围   
 LatRange=[InputPoint(2)-0.51,InputPoint(2)+0.51];       %纬度范围
+
 A=ScreenCoordinatasRegularly(CorA,LonRange,LatRange);
 D=ScreenCoordinatasRegularly(CorD,LonRange,LatRange);
-% 
-% scatter(A(:,1),A(:,2),15,'m','filled');
-% scatter(D(:,1),D(:,2),15,'c','filled');
+
+% Clipped region
+scatter(A(:,1),A(:,2),10,[127 140 141]/255,'filled');
+scatter(D(:,1),D(:,2),10,[127 140 141]/255,'filled');
+% rectangle('Position' ,[InputPoint(1)-1.5,InputPoint(2)-0.51,3,1.02],'Linewidth' ,2,'LineStyle','-','EdgeColor','k')
 
 
 if size(A,1)<=1 || size(D,1)<=1 

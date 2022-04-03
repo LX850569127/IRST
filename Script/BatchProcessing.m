@@ -1,14 +1,15 @@
 % clear;
 
 %% Preferences
+CurrentPath='E:\Sync\Master\Project\Crossover';                % 使用相对路径需要注意当前路径
 Region='Ross';                                                 % Input experimental region
 DataPath='Y:\CryoSat-2 Data\Baseline D\SIR_GDR\';              % Data Path
 StoragePath=strcat('E:\Sync\Master\Project\Crossover\Variate\',Region,'\');   
 load(strcat(Region,'Boundary.mat'));
 
 %% 一、数据读取及裁剪
-% year=2011;
-% for i=1:12  %月份
+% year=2010;
+% for i=12:12  %月份
 %    
 %     if i<10
 %         folderPath = strcat(DataPath, num2str(year),'\0', num2str(i));
@@ -79,11 +80,13 @@ load(strcat(Region,'Boundary.mat'));
 %     
 % %   clear -regexp ^Cut;  %清除已经保存的裁剪数据变量
 % end
-
  
 %% 二、升降轨数据分离
-% year=2011;
-% for i=1:12   %Month 
+
+% plot(Boundary(:,1),Boundary(:,2),'LineWidth',2);
+% hold on;
+% year=2013;
+% for i=1:1   %Month 
 %     
 %     Ascend=[];
 %     Descend=[];
@@ -101,11 +104,11 @@ load(strcat(Region,'Boundary.mat'));
 %     load(variate_cut);
 %     Cut=eval(variate_cut);
 %     
-%     for j=1:size(Cut,1)
+%     for j=10:size(Cut,1)
 %         cor=Cut(j).coordinate;
 % %           对数据进行预处理
 % 
-%         orbitNum=Cut(j).orbitNum;
+%         orbitNum=Cut(j).orbitNum; 
 %         if size(cor,1)>15          %剔除点数较少的轨迹
 %         cor=preprocess(cor);       %数据预处理，剔除偏离较大的轨迹点 
 % 
@@ -143,18 +146,16 @@ load(strcat(Region,'Boundary.mat'));
 Region='Ross';     
 
 % Continuous period of data
-year_A=2011;
+year_A=2013;
+year_D=2013;    
 
-startMonth_A=1;
-endMonth_A=12;
+startMonth=1;
+endMonth=1;
+   
+Ascend=strings([endMonth-startMonth+1,1]);
+Descend=strings([endMonth-startMonth+1,1]);
 
-year_D=2011;
-startMonth_D=1;
-endMonth_D=12;
-
-Ascend=strings([endMonth_A-startMonth_A+1,1]);
-Descend=strings([endMonth_A-startMonth_A+1,1]);
-for i=startMonth_A:endMonth_A
+for i=startMonth:endMonth
     if i<10
         month=strcat('0',num2str(i));    
     else 
@@ -162,107 +163,86 @@ for i=startMonth_A:endMonth_A
     end
     ym_A=strcat(num2str(year_A),month);
     ym_D=strcat(num2str(year_D),month);
-    Ascend(i-startMonth_A+1)=ym_A;
-    Descend(i-startMonth_A+1)=ym_D;
+    Ascend(i-startMonth+1)=ym_A;
+    Descend(i-startMonth+1)=ym_D;
 end
 
 % Custom period of data
 % Descend=["201101";"201102";"201103";"201104";"201105";"201106"];
 % Ascend=["201201";"201202";"201203";"201204";"201205";"201206"];
 
-for i=startMonth_A:endMonth_A
+for i=startMonth:endMonth
     % Load and name 
     name_A=strcat(Region,'_A',Ascend(i));
     name_D=strcat(Region,'_D',Descend(i));
     name_CP=strcat(Region,'_A',Ascend(i),'_D',Descend(i));
-%     load(name_A);  
-%     load(name_D);  
+    load(name_A);  
+    load(name_D);  
     % Solve crossovers 
-    couple=JudgeCrossPoint(eval(name_A),eval(name_D));
+    if ~exist('couple')
+     couple=JudgeCrossPoint(eval(name_A),eval(name_D));
+    end
     sizeOfCouple=size(couple,1);
     corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
         'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
     CP=repmat(corssOver,[sizeOfCouple 1]);
     ind=1;
-   for j=1:sizeOfCouple
+   for j=41:sizeOfCouple
+       figure('color','w')
+hold on;
+box on;
+xlabel('Longitude[ ° ]');
+ylabel('Latitude[ ° ]');
+set(gca,'fontsize',20);
         out= MyCrossOver(couple(j,1),couple(j,2),Boundary);
         if ~isempty(out)
             CP(ind)=out;
             ind = ind+1;
         end
+           close all;
     end
     CP=CP(1:ind-1);
-    
+ 
     % Save 
     eval(strcat(name_CP,'=CP'));
     fileName=strcat(name_CP,'.mat');
     storagePath=strcat('.\Variate\',Region,'\CP\');   %CurrentPath is "..\Crossover"
     save(strcat(storagePath,fileName),name_CP); 
-%     clear -regexp ^Ross; 
- 
+%   clear -regexp ^Ross
 end
 
-
-
-%% 五、求交叉点的精确位置  Ronne冰架
-% region='RIS';
-% load('RossBoundary')
-% load('RossBoundary gap 35.mat');
-% figure;
-% plot(boundary(:,1),boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
-% set(gca,'fontsize',16);
-% xlabel('经度/(°)','FontSize',16);
-% ylabel('纬度/(°)','FontSize',16);
-% hold on;
-% year=2013;
+%% 寻找5km*5km格网中每个格网中的交叉点
+% Region='Ross';     
 % 
-% % bar=waitbar(0,'正在计算交叉点');    %进度条
-% for k=1:1 %月份
-%     
-% % str=['正在计算交叉点',num2str(k),'月'];
-% % waitbar(k/12,bar,str);
+% % Continuous period of data
+% year_A=2011;
+% year_D=2015;    
 % 
-%     if k<10
-%         month=strcat('0',num2str(k));
+% startMonth=1;
+% endMonth=12;
+%    
+% Ascend=strings([endMonth-startMonth+1,1]);
+% Descend=strings([endMonth-startMonth+1,1]);
+% 
+% for i=startMonth:endMonth
+%     if i<10
+%         month=strcat('0',num2str(i));    
 %     else 
-%          month=num2str(k);
-%     end 
-%     for i=1:1
-%         AllCrossOverPoint=[];        
-%         if i==1       %前一年升轨，后一年降轨
-%         AscendPeriod=strcat(num2str(year),month);
-%         DescendPeriod=strcat(num2str(year),month);
-%         else         %后一年升轨，前一年降轨
-%          AscendPeriod=strcat(num2str(year),month);
-%         DescendPeriod=strcat(num2str(year),month);
-%         end
-%         
-%         variate_A=strcat(region,'_A',AscendPeriod);
-%         variate_D=strcat(region,'_D',DescendPeriod);
-%         foldPath=strcat('X:\Xiao\Master\Project\Crossover\Variate\',region,'\2013\');
-%         load(strcat(foldPath,'Ascend\',variate_A));
-%         load(strcat(foldPath,'Descend\',variate_D));    %加载对应的升降轨数据
-%         
-%         % 1判断是否存在交叉点,得到所有轨道的交叉点组合
-% %         Combine=JudgeCrossPoint(eval(variate_RIS_A),eval(variate_RIS_D));
-% %         variateName=strcat('CP2', '_A',AscendPeriod(3:6),'_D',DescendPeriod(3:6));  %最后生成的交叉点集合的命名
-% %         sizeOfCrossCombinations=size(Combine,1);
-% %       
-% %         orbitNum=[];
-% %         for j=1:sizeOfCrossCombinations
-% %             orbitNum=[orbitNum;Combine(j,1).orbitNum,Combine(j,2).orbitNum];
-% %         end
-% %        bar=waitbar(0,'正在计算交叉点');
-%        % 2求交叉点的位置及两个不同时间的高程
-%         for j=199:199
-% %             str=[month,'正在计算交叉点',num2str(j/sizeOfCrossCombinations*100),'%'];
-% %             waitbar(j/sizeOfCrossCombinations,bar,str);
-%             CrossOverPoint= MyCrossOver(Combine(j,1),Combine(j,2),AdjustBoundary);
-%             AllCrossOverPoint=[AllCrossOverPoint;CrossOverPoint];
-%         end
-%         eval([variateName '=AllCrossOverPoint']);
-%         fileName=strcat(variateName,'.mat');
-%         save([StoragePath,'2013\CP\',fileName],variateName); 
+%         month=num2str(i);  
 %     end
+%     ym_A=strcat(num2str(year_A),month);
+%     ym_D=strcat(num2str(year_D),month);
+%     Ascend(i-startMonth+1)=ym_A;
+%     Descend(i-startMonth+1)=ym_D;
 % end
-% % close(bar)
+% 
+% total_CP=[];
+% for i=startMonth:endMonth
+%      name_CP=strcat(Region,'_A',Ascend(i),'_D',Descend(i));
+%      CP=eval(name_CP);
+%      total_CP=[total_CP;CP]
+% end
+
+
+
+

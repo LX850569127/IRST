@@ -155,7 +155,7 @@
 % orbit. Saving the corrected Value 'V' to every orbit. 
 
 Region='Ross';    
-Year=2011;
+Year=2015;
 StartMonth=1;
 EndMonth=12;
 StoragePath=strcat('.\Variate\',Region,'\');
@@ -253,12 +253,15 @@ for i=1:size(Orbital_CP,1)
     else
         A=[ones(numOfCP,1 ),d_t,cos(w*d_t),sin(w*d_t),cos(2*w*d_t),sin(2*w*d_t),cos(3*w*d_t),sin(3*w*d_t)];
     end
-    P=diag(ones(size(V,1),1));
+   
     X=inv(A.'*P*A)*A.'*P*V;
     Orbital_CP(i).modelParameter=X.';
 end
 
 orbitNum_CP=cell2mat({Orbital_CP(:).orbitNum}).';
+temp_A= struct('coordinate',[], 'orbitNum',[],'flag_AD',[], 'correctionPar',[]);    
+temp_A=repmat(temp_A,[size(ascend,1) 1]);
+
 for i=1:size(ascend,1)
     orbitNum=double(ascend(i).orbitNum);
     temp=ascend(i);
@@ -268,9 +271,11 @@ for i=1:size(ascend,1)
     else
         temp.correctionPar=[];           % the orbit without correction parameters. 
     end 
-    ascend(i)=temp;
+    temp_A(i)=temp;
 end
 
+temp_D= struct('coordinate',[], 'orbitNum',[],'flag_AD',[], 'correctionPar',[]);    
+temp_D=repmat(temp_D,[size(ascend,1) 1]);
 for i=1:size(descend,1)
     orbitNum=double(descend(i).orbitNum);
     temp=descend(i);
@@ -280,11 +285,11 @@ for i=1:size(descend,1)
     else
         temp.correctionPar=[];           % the orbit without correction parameters. 
     end 
-    descend(i)=temp;
+    temp_D(i)=temp;
 end
 
-eval(strcat(name_A,'=ascend'));    
-eval(strcat(name_D,'=descend'));    
+eval(strcat(name_A,'=temp_A'));    
+eval(strcat(name_D,'=temp_D'));    
 
 fileNameA=strcat(name_A,'.mat');
 fileNameD=strcat(name_D,'.mat');
@@ -300,11 +305,3 @@ save([char(storagePathA),char(fileNameA)],name_A);
 save([char(storagePathD),char(fileNameD)],name_D);
 
 end
-
-% % 通过频率分布直方图确定交叉点个数于模型待定系数m的关系组合
-% numOfCPOfOrbit=zeros(size(Orbital_CP,1),1);
-% for i=1:size(Orbital_CP,1)
-%     numOfCPOfOrbit(i)=size(Orbital_CP(i).v_tOfCP,1);
-% end
-% figure;
-% h2 = histogram(numOfCPOfOrbit);

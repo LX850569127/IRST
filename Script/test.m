@@ -523,39 +523,214 @@
 % end 
 % toc
 
+
 %%
-figure;
-hold on;
-for i=1:size(Cut201101,1)
-  temp=Cut201101(i).coordinate;
-  scatter(temp(:,1),temp(:,2),1,'r','filled');
-end    
-plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
-hold on;
-for i=1:size(CP2_A1101_D1101,1)
-  temp=CP2_A1101_D1101(i).coordinate;
-  scatter(temp(:,1),temp(:,2),10 ,'b','filled');
-end
-%%
-All_CP=load('CP_2013.txt');
-figure;
-colormap(CustomColormap) 
-plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
-hold on;
-scatter(All_CP(:,1),All_CP(:,2),15,abs(All_CP(:,3)),'filled'); 
+% figure;
+% hold on;
+% for i=1:size(Cut201101,1)
+%   temp=Cut201101(i).coordinate;
+%   scatter(temp(:,1),temp(:,2),1,'r','filled');
+% end    
+% plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% for i=1:size(CP2_A1101_D1101,1)
+%   temp=CP2_A1101_D1101(i).coordinate;
+%   scatter(temp(:,1),temp(:,2),10 ,'b','filled');
+% end
+% %%
+% All_CP=load('CP_2013.txt');
+% figure;
+% colormap(CustomColormap) 
+% plot(Boundary(:,1),Boundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+% hold on;
+% scatter(All_CP(:,1),All_CP(:,2),15,abs(All_CP(:,3)),'filled'); 
+% % a=load('Ross_5km_Grid_EDIT.dat');
+% % scatter(a(:,1),a(:,2),20,'filled'); 
+% %格网点绘制
+% All_CP(:,3)=abs(All_CP(:,3));
+% 
+% 
+% 
+% 
+% %% 计算平差有效次数
+% CP=Ross_A201101_D201101;
+% [altitude_A]={CP(:).altitude_A};
+% [altitude_D]={CP(:).altitude_D};
+% 
+% % beforeAdjust=abs(cell2mat(altitude_A)-cell2mat(altitude_D));
+% % afterAdjust=abs(cell2mat(altitude_A)-cell2mat(altitude_D));
+% % success=find(afterAdjust<beforeAdjust);
+% % failure=find(afterAdjust>beforeAdjust);
+% % unchanged=find(afterAdjust==beforeAdjust);
+
+%% grid test 
+% rossGrid=load('Ross_5km_Grid_EDIT.dat');
+% % load('RossBoundary');
+% % 
+% % figure;
+% % plot(Boundary(:,1),Boundary(:,2));
+% % hold on;
+% 
+% latitudeRow=sort(unique(rossGrid(:,2)),'descend');
+% longitudeColumn=sort(unique(rossGrid(:,1)),'ascend');
+% rows=size(latitudeRow,1);
+% column=size(longitudeColumn,1);
+% gridCell=cell(rows,column);
+% for i=1:rows
+%     for j=1:column
+%         cor=[longitudeColumn(j),latitudeRow(i)];
+%         if inpolygon(cor(1),cor(2),boundary(:,1),boundary(:,2))
+%            gridCell{i,j}=[longitudeColumn(j),latitudeRow(i)];
+%         else
+%            gridCell{i,j}=[0,0];
+%         end
+%     end
+% end
+% 
+% 
+% for i=1:rows
+%     for j=1:column
+%         cor=[longitudeColumn(j),latitudeRow(i)];
+%     end
+% end
+% 
+% %% 生成格网边界数据
+% 
+% 
 % a=load('Ross_5km_Grid_EDIT.dat');
-% scatter(a(:,1),a(:,2),20,'filled'); 
-%格网点绘制
+% westS=min(longitudeColumn)-0.28/2;  % west starting point 
+% eastE=max(longitudeColumn)+0.28/2;  % east ending point 
+% southEnd=min(latitudeRow)-0.045/2;
+% northEnd=max(latitudeRow)+0.045/2;    
+% lat=(southEnd:0.045:northEnd);
+% 
+% Ax=ones(1,179)*westS;
+% Ay=lat;
+% Bx=ones(1,179)*eastE;
+% By=lat;
+% X=[Ax;Bx];
+% Y=[Ay;By];
+% 
+% long=westS:0.28:eastE;
+% X1=[long;long];
+% Y1=[ones(1,195)*southEnd;ones(1,195)*northEnd];
+% 
+% figure;
+% line(X,Y,'color','k','linewidth',0.01);     % 经度划分线
+% hold on;
+% line(X1,Y1,'color','k','linewidth',0.01);   % 纬度划分线
+% plot(boundary(:,1),boundary(:,2));
+% scatter(a(:,1),a(:,2));
+% 
 
-All_CP(:,3)=abs(All_CP(:,3));
+%% 生成Ross冰架地区的格网
+% startingLat=-85.4100; latInterval=0.045;
+% startingLong=158.05; endingLong=212.6;
+% latGrid=startingLat:latInterval:-77.4;
+% intervalLong=zeros(179,1);
+
+% for i=1:size(latGrid,2)
+%     lat=latGrid(i);
+%     % computing the interval of longitude equivalent to 5km 
+%     lon1=0;
+%     P1=[lon1,lat];
+%     for j=20000:60000 
+%         lon2=lon1+j*0.00001;   
+%         P2=[lon2,lat];
+%         d=SphereDist(P1,P2,6367.5);
+%         if abs(d-5)<=0.001
+%             intervalLong(i)=j*0.00001;
+%             break;
+%         end
+%     end
+% end
+
+% rossGrid = struct('lat',[], 'long',[]);    
+% rossGrid=repmat(rossGrid,[179 1]);
+% for i=1:size(latGrid,2)
+%     rossGrid(i).lat=latGrid(i);
+%     tempLong=startingLong:intervalLong(i):endingLong;
+%     rossGrid(i).long=tempLong;
+% end
+% 
+% %% 绘制格网
+% figure;
+% plot(Boundary(:,1),Boundary(:,2));
+% hold on;
+% for i=1:size(rossGridEdited,1)
+%     long=rossGridEdited(i).long;
+%     lat=ones(size(long))*rossGridEdited(i).lat;
+%     scatter(long,lat,4,'filled');
+% end
+%% 
+
+%% picking up the required grid cell 
+% for i=1:size(rossGrid,1)
+%     disp(i);
+%     pickedGrid=[];
+%     long=rossGrid(i).long;
+%     lat=ones(size(long))*rossGrid(i).lat;
+%     logicIndex=inpolygon(long,lat,Boundary(:,1),Boundary(:,2));
+%     long1=long(logicIndex).';
+%     
+%     P1=[long1,ones(size(long1))*rossGrid(i).lat;];
+%     pickedGrid=[pickedGrid;P1];
+%     
+%     long3=[];
+%     long2=long(~logicIndex).';
+%     P2=[long2,ones(size(long2))*rossGrid(i).lat];   
+%     if ~isempty(P2)    
+%         for j=1:size(P2,1)
+%           d=distance(boundary(:,2),boundary(:,1),P2(j,2),P2(j,1))*pi/180*6367.5;
+%           d=min(d);
+%           if d<2.5^0.5*1.5
+%               a=1;
+%               long3=[long3;P2(j,1)];
+%           end
+%         end
+%     end
+%   
+%     rossGrid(i).long=sort([P1(:,1);long3],1);
+% end
+% % % 
+% % % 画格子网
+% % 
+% rossGridEdited = struct('lat',[], 'long',[],'longInterval',[]);    
+% rossGridEdited=repmat(rossGridEdited,[179 1]);
+% for i=1:size(rossGrid,1)   
+%      rossGridEdited(i).lat=rossGrid(i).lat;
+%      rossGridEdited(i).long=rossGrid(i).long;
+%      rossGridEdited(i).longInterval=intervalLong(i);
+% end
+
+% 画格子网
+% figure;
+% plot(boundary(:,1),boundary(:,2));
+% hold on;
+% % 
+% for i=1:size(rossGridEdited,1)   
+%      disp(i);
+%      long=rossGridEdited(i).long;
+%      lat=ones(size(long))*rossGridEdited(i).lat;
+%      scatter(long,lat,4,'filled');
+%      w=rossGridEdited(i).longInterval;
+%      h=0.045;
+%      for j=1:size(long)      
+%          x=long(j)-w/2;
+%          y=lat(1)-h/2;
+%          hold on;
+%          rectangle('Position',[x,y,w,h])  %从点(x,y)开始绘制一个宽w高h的矩形，
+%      end
+% end
+% a=rossGridEdited(94).long;
+% rossGridEdited(94).long=a(1:139);
+%   d=distance(Boundary(:,2),Boundary(:,1),-81.27,211.024)*pi/180*6367.5;
+%   min(d);
+% 
+% 
+% coor=cell2mat({Ross_2011_2012(:).coordinate}).';
+% scatter(coor(1:2:67177,:),coor(2:2:67178,:));
+
+%% Calibrating the results of Envisat's crossovers in Ross 
 
 
-%% 计算平差有效次数
-CP=Ross_A201101_D201101;
-[altitude_A]={CP(:).altitude_A};
-[altitude_D]={CP(:).altitude_D};
-% beforeAdjust=abs(cell2mat(altitude_A)-cell2mat(altitude_D));
-afterAdjust=abs(cell2mat(altitude_A)-cell2mat(altitude_D));
-success=find(afterAdjust<beforeAdjust);
-failure=find(afterAdjust>beforeAdjust);
-unchanged=find(afterAdjust==beforeAdjust);

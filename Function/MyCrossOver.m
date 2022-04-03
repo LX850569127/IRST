@@ -65,7 +65,6 @@ end
 % %    CrossOverPointOutput=[];
 % %    return;
 % end
-
 % 调试 画出升降轨的卫星脚点的原始分布
 % scatter(cor_A(:,1),cor_A(:,2),10,[127 140 141]/255,'filled','HandleVisibility','off');  
 % scatter(cor_D(:,1),cor_D(:,2),10,[127 140 141]/255,'filled');  %color [0 140 141]/255
@@ -74,7 +73,6 @@ end
 % plot2 =plot(yD,xD,'-.','Color',[0 0 0]/255,'LineWidth',2);
 % 调试 画出拟合后的概略点位置
 % scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'r','d','filled');
-
 
 
 %判断3
@@ -159,7 +157,13 @@ end
 
 % % 优化后的AMT方法
 CrossOverPoint= AMT(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
-% scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),200,'p','b','filled');
+% if ~isempty(CrossOverPoint)
+%     scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),200,'p','b','filled');
+% end
+
+%调试
+scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),100,'k','d','filled');
+
 
 %方法三 改进的迭代法
 % Tangent=SolveTangent(CursoryCrossPoint,coefficient);    %求第一次粗略位置的两条切线
@@ -189,7 +193,7 @@ end
 %% 反距离加权插值
 % %3.1 交叉点升轨高程计算
 % rowOfCloset=SearchClosestValue(cor_A(:,2),CrossOverPoint(2));
-% 
+%  
 % %计算EnviSat数据的时候由于纬度接近的值太多使用经度进行计算
 % % rowOfCloset=SearchClosestValue(cor_A(:,1),CrossOverPoint(1));
 % 
@@ -428,59 +432,58 @@ end
 
      % caculating the correction value based on 验后条件平差  
      
-     A=altitude_A-altitude_D;
-    if isfield(Ascending_data,'correctionPar')
-    par=Ascending_data.correctionPar;   % parameters of the error model 
-    sizeOfPar=size(par,2);
-    s_t=min(cor_A(:,4));
-    e_t=max(cor_A(:,4));
-    d_t=time_A-s_t;
-    w=2*pi/(e_t-s_t);
-    if ~isempty(par)
-        switch sizeOfPar
-            case 1
-                ft_a=par;
-            case 2
-                ft_a=par(1)+par(2)*d_t;
-            case 4
-                ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t);
-            case 6 
-                ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
-                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t);
-            case 8
-                ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
-                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t)...
-                   +par(7)*cos(3*w*d_t)+par(8)*sin(3*w*d_t);
+     if isfield(Ascending_data,'correctionPar')
+        par=Ascending_data.correctionPar;   % parameters of the error model 
+        sizeOfPar=size(par,2);
+        s_t=min(cor_A(:,4));
+        e_t=max(cor_A(:,4));
+        d_t=time_A-s_t;
+        w=2*pi/(e_t-s_t);
+        if ~isempty(par)
+            switch sizeOfPar
+                case 1
+                    ft_a=par;
+                case 2
+                    ft_a=par(1)+par(2)*d_t;
+                case 4
+                    ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t);
+                case 6 
+                    ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                       +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t);
+                case 8
+                    ft_a=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                       +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t)...
+                       +par(7)*cos(3*w*d_t)+par(8)*sin(3*w*d_t);
+            end
+            altitude_A=altitude_A-ft_a;
         end
-        altitude_A=altitude_A-ft_a;
-    end
- 
-    par=Descending_data.correctionPar;   % parameters of the error model 
-    sizeOfPar=size(par,2);
-    s_t=min(cor_D(:,4));
-    e_t=max(cor_D(:,4));
-    d_t=time_D-s_t;
-    w=2*pi/(e_t-s_t);
-    if ~isempty(par)
-        switch sizeOfPar
-            case 1
-                ft_d=par;
-            case 2
-                ft_d=par(1)+par(2)*d_t;
-            case 4
-                ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t);
-            case 6 
-                ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
-                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t);
-            case 8
-                ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
-                   +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t)...
-                   +par(7)*cos(3*w*d_t)+par(8)*sin(3*w*d_t);
+
+        par=Descending_data.correctionPar;   % parameters of the error model 
+        sizeOfPar=size(par,2);
+        s_t=min(cor_D(:,4));
+        e_t=max(cor_D(:,4));
+        d_t=time_D-s_t;
+        w=2*pi/(e_t-s_t);
+        if ~isempty(par)
+            switch sizeOfPar
+                case 1
+                    ft_d=par;
+                case 2
+                    ft_d=par(1)+par(2)*d_t;
+                case 4
+                    ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t);
+                case 6 
+                    ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                       +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t);
+                case 8
+                    ft_d=par(1)+par(2)*d_t+par(3)*cos(w*d_t)+par(4)*sin(w*d_t)...
+                       +par(5)*cos(2*w*d_t)+par(6)*sin(2*w*d_t)...
+                       +par(7)*cos(3*w*d_t)+par(8)*sin(3*w*d_t);
+            end
+            altitude_D=altitude_D-ft_d;
         end
-        altitude_D=altitude_D-ft_d;
-    end
- 
-   A=altitude_A-altitude_D;
+     end
+    
 %% 
 % hold on;
 % scatter(CrossOverPoint(1),CrossOverPoint(2),100,'p','k','filled');
