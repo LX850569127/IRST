@@ -733,4 +733,6 @@
 
 %% Calibrating the results of Envisat's crossovers in Ross 
 
-
+load('AmerOutsideCoastline.txt');
+figure('color','w');
+plot(AmerOutsideCoastline(:,1),AmerOutsideCoastline(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 

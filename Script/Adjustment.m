@@ -155,7 +155,7 @@
 % orbit. Saving the corrected Value 'V' to every orbit. 
 
 Region='Ross';    
-Year=2015;
+Year=2016;
 StartMonth=1;
 EndMonth=12;
 StoragePath=strcat('.\Variate\',Region,'\');
@@ -167,8 +167,8 @@ name_A=strcat(Region,'_A',yearMonth);
 name_D=strcat(Region,'_D',yearMonth);
 name_CP=strcat(Region,'_A',yearMonth,'_D',yearMonth);
 
-% load(name_A);  
-% load(name_D); 
+load(name_A);  
+load(name_D); 
 
 eval(strcat('ascend=',name_A));    
 eval(strcat('descend=',name_D));    
@@ -253,7 +253,7 @@ for i=1:size(Orbital_CP,1)
     else
         A=[ones(numOfCP,1 ),d_t,cos(w*d_t),sin(w*d_t),cos(2*w*d_t),sin(2*w*d_t),cos(3*w*d_t),sin(3*w*d_t)];
     end
-   
+    P=diag(ones(size(V,1),1));
     X=inv(A.'*P*A)*A.'*P*V;
     Orbital_CP(i).modelParameter=X.';
 end

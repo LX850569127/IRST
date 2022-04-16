@@ -74,7 +74,6 @@ end
 % 调试 画出拟合后的概略点位置
 % scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),80,'r','d','filled');
 
-
 %判断3
 %若粗略位置是因为曲线过短导致的错误解，通过该点与升降轨的纬度差进行剔除
 min1=min(abs(cor_A(:,2)-CursoryCrossPoint(2)))+min(abs(cor_D(:,2)-CursoryCrossPoint(2)));
@@ -85,75 +84,8 @@ end
 % 
 
 
-
 %% 二、求精确位置
 
-%方法一 迭代法
-% CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,35);
-% scatter(CrossOverPoint(1),CrossOverPoint(2),200,'p','k','filled');
-
-%方法二 跨立交叉法
-%1) 自己写的
-% CrossOverPoint1=ExactPosition2(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
-%     scatter(CrossOverPoint1(1),CrossOverPoint1(2),88,'p','k','filled');
-%2) AMT工具的交叉法
-% [lat,lon]=crossovers([cor_A(:,2);cor_D(:,2)],[cor_A(:,1);cor_D(:,1)],'SizeA',size(cor_A,1),'tile','off');
-% if lon<0
-%     lon=180+180-abs(lon);
-% end
-% CrossOver_AMT=[lon,lat];
-% CrossOverPoint=[];
-%   
-% if ~isempty(CrossOver_AMT)   %输出多个交叉点的情况，选择距离升降轨最近的交叉点
-%     [in]= inross(CrossOver_AMT(:,1),CrossOver_AMT(:,2),AdjustBoundary);
-%  
-%     if sum(in)==1   %只有一个点在边界内时直接赋值
-%         CrossOverPoint=CrossOver_AMT(in,:);
-%     elseif sum(in)>1   %有多个点在边界内时选取距离插值点最接近的一个点
-%         CrossOver_AMT=CrossOver_AMT(in,:);
-%         
-%        hold on;
-%        scatter(CrossOver_AMT(:,1),CrossOver_AMT(:,2),88,'p','b','filled');
-%       
-%         dis=zeros(size(CrossOver_AMT,1),1);
-%         for i=1:size(CrossOver_AMT,1)
-%             x=CrossOver_AMT(i,1);  
-%             y=CrossOver_AMT(i,2);  %经纬度
-%                         
-%             ind=find(cor_A(:,2)>=y);
-%             Top_Cor_A=cor_A(ind,:);        %上方的升轨点
-%             ind=find(cor_A(:,2)<y);
-%             Bot_Cor_A=cor_A(ind,:);       %下方的升轨点
-%             
-%             ind=find(cor_D(:,2)>=y);
-%             Top_Cor_D=cor_D(ind,:);        %上方的降轨点
-%             ind=find(cor_D(:,2)<y);
-%             Bot_Cor_D=cor_D(ind,:);       %下方的降轨点 
-%             
-%             [dis1,row1]=min(distance([x,y],Top_Cor_A(:,1:2)));
-%             [dis2,row2]=min(distance([x,y],Bot_Cor_A(:,1:2)));
-%             [dis3,row3]=min(distance([x,y],Top_Cor_D(:,1:2)));
-%             [dis4,row4]=min(distance([x,y],Bot_Cor_D(:,1:2)));  
-%             
-%             A1=Top_Cor_A(row1,1:2);
-%             A2=Bot_Cor_A(row2,1:2);
-%             B1=Top_Cor_D(row3,1:2);
-%             B2=Bot_Cor_D(row4,1:2);
-%             
-%             list=[A1;A2;B1;B2];
-%             if i==4
-%             scatter(list(:,1),list(:,2),30,'r');
-%             end          
-%             dis(i)=mean([dis1,dis2,dis3,dis4]);                            
-%         end
-%         CrossOverPoint=CrossOver_AMT(find(sum(dis,2)==min(sum(dis,2))),:);
-%     end
-% end
-
-% 
-%  debug
-% hold on;
-% scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),88,'p','k','filled');
 
 % % 优化后的AMT方法
 CrossOverPoint= AMT(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
@@ -161,170 +93,12 @@ CrossOverPoint= AMT(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary);
 %     scatter(CrossOverPoint(:,1),CrossOverPoint(:,2),200,'p','b','filled');
 % end
 
-%调试
-scatter(CursoryCrossPoint(1),CursoryCrossPoint(2),100,'k','d','filled');
-
-
-%方法三 改进的迭代法
-% Tangent=SolveTangent(CursoryCrossPoint,coefficient);    %求第一次粗略位置的两条切线
-% [NumOfIterativePoints]=DetermineNumberOfIterations(cor_A,cor_D,CursoryCrossPoint,Tangent);  %求第一次迭代的迭代点数
-% CrossOverPoint=IterationOfCursoryLocation(cor_A,cor_D,CursoryCrossPoint,AdjustBoundary,10,NumOfIterativePoints,Tangent,true);
-
-%  scatter(CrossOverPoint(1),CrossOverPoint(2),88,'p','k','filled');
-% %调试 为了对比两种不同方法的精确位置结果
-% if ~isempty(CrossOverPoint)
-
-%     hold on;
-%     scatter(CrossOverPoint1(1),CrossOverPoint1(2),88,'p','r','filled');
-% end
-%如果返回交叉点位置的矩阵为空，说明该交叉点位于边界之外，直接返回
-% if ~isequal(CrossOverPoint1,CrossOverPoint)
-%      a=1;
-% end
 if isempty(CrossOverPoint)
     CrossOverPointOutput=[];
     return;
 end 
 
-
-
 %% 三、求交叉点的两个高程以及对应的时间
-
-%% 反距离加权插值
-% %3.1 交叉点升轨高程计算
-% rowOfCloset=SearchClosestValue(cor_A(:,2),CrossOverPoint(2));
-%  
-% %计算EnviSat数据的时候由于纬度接近的值太多使用经度进行计算
-% % rowOfCloset=SearchClosestValue(cor_A(:,1),CrossOverPoint(1));
-% 
-% %找到高程插值点
-%  % 防止延伸后超出矩阵范围的情况出现
-%         if(rowOfCloset-2<=0)  
-%             floor=1;
-%         else
-%             floor=rowOfCloset-2;
-%         end
-%         if(rowOfCloset+2>size(cor_A))
-%             top=size(cor_A);
-%         else
-%             top=rowOfCloset+2;
-%         end
-% interpolationPointOfA=cor_A(floor:top,:);
-% % hold on;
-% % scatter(interpolationPointOfA(:,1),interpolationPointOfA(:,2),30,'r');
-% 
-% %进行反距离加权计算精确交叉点的高程插值
-% %计算距离
-% for i=1:size(interpolationPointOfA,1)
-% dis=distance([interpolationPointOfA(i,2),interpolationPointOfA(i,1)],[CrossOverPoint(2),CrossOverPoint(1)])*pi/180*6371.393;
-% interpolationPointOfA(i,5)=dis;   %距离(单位为km)
-% end
-% % scatter(interpolationPointOfA(:,1),interpolationPointOfA(:,2),30,'r');
-% %剔除距离过大的点
-% interpolationPointOfA(interpolationPointOfA(:,5)>2,:)=[];
-% 
-% %剔除高程值异常的点，高程>2000&&<-55
-% interpolationPointOfA(interpolationPointOfA(:,3)>2000,:)=[];
-% interpolationPointOfA(interpolationPointOfA(:,3)<-55.5,:)=[];
-% 
-% 
-% %如果在升轨或者降轨中用于对交叉点高程进行插值的点距离交叉点的位置均过远，舍弃该交叉点
-% if isempty(interpolationPointOfA)
-%     CrossOverPointOutput=[];
-%     return;
-% end 
-% 
-% %通过距离加权得到高程
-% %权重计算
-% denominator=0;
-% for i=1:size(interpolationPointOfA,1)
-%     denominator=denominator+interpolationPointOfA(i,5)^-2;
-% end 
-% 
-% for i=1:size(interpolationPointOfA,1)
-%     weightFactor=interpolationPointOfA(i,5)^-2/denominator;
-%     interpolationPointOfA(i,6)=weightFactor; 
-% end 
-% 
-% 
-% 
-% %高程插值计算
-% altitude_A=0;
-% for i=1:size(interpolationPointOfA,1)
-%     altitude_A=altitude_A+interpolationPointOfA(i,3)*interpolationPointOfA(i,6);
-% end 
-% 
-% time_A=0;
-% % time_A=cor_A(rowOfCloset,4);
-% 
-% 
-% %3.2 交叉点降轨高程计算
-% rowOfCloset=SearchClosestValue(cor_D(:,2),CrossOverPoint(2));
-% 
-% 
-% % %计算EnviSat数据的时候由于纬度接近的值太多使用经度进行计算
-% % rowOfCloset=SearchClosestValue(cor_D(:,1),CrossOverPoint(1));
-% 
-% %找到高程插值点
-%  % 防止延伸后超出矩阵范围的情况出现
-%         if(rowOfCloset-2<=0)
-%             floor=1;
-%         else
-%             floor=rowOfCloset-2;
-%         end
-%         if(rowOfCloset+2>size(cor_D))
-%             top=size(cor_D);
-%         else
-%             top=rowOfCloset+2;
-%         end
-% interpolationPointOfD=cor_D(floor:top,:);
-% 
-% %进行反距离加权计算精确交叉点的高程插值
-% 
-% %计算距离
-% for i=1:size(interpolationPointOfD,1)
-% dis=distance(interpolationPointOfD(i,2),interpolationPointOfD(i,1),CrossOverPoint(2),CrossOverPoint(1))*pi/180*6371.393;
-% interpolationPointOfD(i,5)=dis;   %距离(单位为km)
-% end
-% % scatter(interpolationPointOfD(:,1),interpolationPointOfD(:,2),30,'b');
-% %剔除距离过大的点
-% interpolationPointOfD(interpolationPointOfD(:,5)>2,:)=[];
-% 
-% %剔除高程值异常的点，高程>2000&&<-55
-% interpolationPointOfD(interpolationPointOfD(:,3)>2000,:)=[];
-% interpolationPointOfD(interpolationPointOfD(:,3)<-55.5,:)=[];
-% 
-% %如果在升轨或者降轨中用于对交叉点高程进行插值的点距离交叉点的位置均过远，舍弃该交叉点
-% if isempty(interpolationPointOfD)
-%     CrossOverPointOutput=[];
-%     return;
-% end 
-% 
-% % 调试 画出用于高程插值的升轨点和降轨点
-% % hold on;
-% % scatter(interpolationPointOfA(:,1),interpolationPointOfA(:,2),30,'r');
-% % scatter(interpolationPointOfD(:,1),interpolationPointOfD(:,2),30,'b');
-% 
-% 
-% % 通过距离加权得到高程
-% % 权重计算
-% denominator=0;
-% for i=1:size(interpolationPointOfD,1)
-%     denominator=denominator+interpolationPointOfD(i,5)^-2;
-% end 
-% 
-% for i=1:size(interpolationPointOfD,1)
-%     weightFactor=interpolationPointOfD(i,5)^-2/denominator;
-%     interpolationPointOfD(i,6)=weightFactor; 
-% end 
-% 
-% %高程插值计算
-% altitude_D=0;
-% for i=1:size(interpolationPointOfD,1)
-%     altitude_D=altitude_D+interpolationPointOfD(i,3)*interpolationPointOfD(i,6);
-% end 
-% time_D=0;
-% time_D=cor_D(rowOfCloset,4);
 
 %% 线性插值 
 
@@ -395,10 +169,9 @@ end
     % 降轨插值
      if size(B,1)>1
         altitude_D=B1(3)+(B2(3)-B1(3))*(y-B1(2))/(B2(2)-B1(2));   %根据纬度
-    else
+     else
         altitude_D=B(3);  %唯一值
-     end
-    
+     end    
     
     % useful for debugging     
 %     scatter(A(:,1),A(:,2),30,'b');
@@ -500,6 +273,6 @@ orbitNum_D=Descending_data.orbitNum;   %降轨轨道号
 CrossOverPointOutput= struct('coordinate',CrossOverPoint, 'orbitNum_A',orbitNum_A, 'orbitNum_D',orbitNum_D,...
 'altitude_A',altitude_A,'altitude_D',altitude_D,'time_A',time_A,'time_D',time_D,...
   'PDOP',PDOP); 
-%%
+
 end
 

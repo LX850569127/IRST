@@ -8,8 +8,8 @@ StoragePath=strcat('E:\Sync\Master\Project\Crossover\Variate\',Region,'\');
 load(strcat(Region,'Boundary.mat'));
 
 %% 一、数据读取及裁剪
-% year=2010;
-% for i=12:12  %月份
+% year=2016;
+% for i=1:12  %月份
 %    
 %     if i<10
 %         folderPath = strcat(DataPath, num2str(year),'\0', num2str(i));
@@ -83,10 +83,8 @@ load(strcat(Region,'Boundary.mat'));
  
 %% 二、升降轨数据分离
 
-% plot(Boundary(:,1),Boundary(:,2),'LineWidth',2);
-% hold on;
-% year=2013;
-% for i=1:1   %Month 
+% year=2016;
+% for i=1:12   %Month 
 %     
 %     Ascend=[];
 %     Descend=[];
@@ -104,7 +102,7 @@ load(strcat(Region,'Boundary.mat'));
 %     load(variate_cut);
 %     Cut=eval(variate_cut);
 %     
-%     for j=10:size(Cut,1)
+%     for j=1:size(Cut,1)
 %         cor=Cut(j).coordinate;
 % %           对数据进行预处理
 % 
@@ -146,11 +144,11 @@ load(strcat(Region,'Boundary.mat'));
 Region='Ross';     
 
 % Continuous period of data
-year_A=2013;
-year_D=2013;    
+year_A=2016;
+year_D=2016;    
 
 startMonth=1;
-endMonth=1;
+endMonth=12;
    
 Ascend=strings([endMonth-startMonth+1,1]);
 Descend=strings([endMonth-startMonth+1,1]);
@@ -171,7 +169,7 @@ end
 % Descend=["201101";"201102";"201103";"201104";"201105";"201106"];
 % Ascend=["201201";"201202";"201203";"201204";"201205";"201206"];
 
-for i=startMonth:endMonth
+for i=1:12
     % Load and name 
     name_A=strcat(Region,'_A',Ascend(i));
     name_D=strcat(Region,'_D',Descend(i));
@@ -179,21 +177,13 @@ for i=startMonth:endMonth
     load(name_A);  
     load(name_D);  
     % Solve crossovers 
-    if ~exist('couple')
-     couple=JudgeCrossPoint(eval(name_A),eval(name_D));
-    end
+    couple=JudgeCrossPoint(eval(name_A),eval(name_D));
     sizeOfCouple=size(couple,1);
     corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
         'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
     CP=repmat(corssOver,[sizeOfCouple 1]);
     ind=1;
-   for j=41:sizeOfCouple
-       figure('color','w')
-hold on;
-box on;
-xlabel('Longitude[ ° ]');
-ylabel('Latitude[ ° ]');
-set(gca,'fontsize',20);
+   for j=1:sizeOfCouple
         out= MyCrossOver(couple(j,1),couple(j,2),Boundary);
         if ~isempty(out)
             CP(ind)=out;
@@ -208,7 +198,8 @@ set(gca,'fontsize',20);
     fileName=strcat(name_CP,'.mat');
     storagePath=strcat('.\Variate\',Region,'\CP\');   %CurrentPath is "..\Crossover"
     save(strcat(storagePath,fileName),name_CP); 
-%   clear -regexp ^Ross
+  clear -regexp ^Ross
+  clear couple
 end
 
 %% 寻找5km*5km格网中每个格网中的交叉点
