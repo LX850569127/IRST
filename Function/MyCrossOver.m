@@ -182,27 +182,6 @@ end
     time_A=A(1,4);
     time_D=B(1,4);   
 
-    
-    % caculating the correction value based on the lineal model
-
-%     if isfield(Ascending_data,'correctionPar')
-%         correctionPar_A=Ascending_data.correctionPar;
-%         if sum(correctionPar_A)~=0
-%             a0_A=correctionPar_A(1);
-%             a1_A=correctionPar_A(2);
-%             delta_h_A=a0_A+a1_A*(time_A-min(cor_A(:,4)));
-%             altitude_A=altitude_A+delta_h_A;
-%         end 
-% 
-%         correctionPar_D=Descending_data.correctionPar;
-%         if sum(correctionPar_D)~=0
-%             a0_D=correctionPar_D(1);
-%             a1_D=correctionPar_D(2);
-%             delta_h_D=a0_D+a1_D*(time_D-min(cor_D(:,4)));
-%             altitude_D=altitude_D+delta_h_D;
-%         end 
-%     end
-
      % caculating the correction value based on 验后条件平差  
      
      if isfield(Ascending_data,'correctionPar')

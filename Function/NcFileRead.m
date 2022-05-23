@@ -9,19 +9,32 @@ fileNumber=size(filesPath);
 Output_TrackInfo=[]; %定义输出坐标、高程以及时间信息的矩阵
 %1)读取经纬度坐标、高程信息、时间并进行存储
     
- parfor i=1:fileNumber(1)
+    for i=1:fileNumber(1)
         Inpath=strcat(FolderPath,'\',filesPath(i,:).name);
-        
         lat = ncread(Inpath,'lat_poca_20_ku'); 
         lon = ncread(Inpath,'lon_poca_20_ku');
         time =ncread(Inpath,'time_20_ku');
         height=ncread(Inpath,'height_1_20_ku');      
-        Attribute=ncinfo(Inpath).Attributes;     %文件头信息
-       
-        orbitNum=Attribute(13).Value;                     %absolute orbit number
-        first_record_time=TAI2Sec(Attribute(27).Value);   
-        last_record_time=TAI2Sec(Attribute(28).Value);    %读取数据记录时间用于数据裁剪
-        
+        Attribute=ncinfo(Inpath).Attributes;     %文件头信息   
+     
+        if string(Attribute(13).Name)=='abs_orbit_number'
+            orbitNum=Attribute(13).Value;                     %absolute orbit number
+            first_record_time=TAI2Sec(Attribute(27).Value);   
+            last_record_time=TAI2Sec(Attribute(28).Value);    %读取数据记录时间用于数据裁剪
+        else
+            temp={Attribute(:).Name}.';                       %将结构体中的Name字段下的所有信息转为string数组
+            attributeName=string(zeros(numel(temp),1));
+            for j=1:numel(temp)
+                 attributeName(j)=cell2mat(temp(j));
+            end
+              k=contains(attributeName,'abs_orbit_number');
+              k1=contains(attributeName,'first_record_time');
+              k2=contains(attributeName,'last_record_time');
+              orbitNum=Attribute(k).Value;
+              first_record_time=TAI2Sec(Attribute(k1).Value);   
+              last_record_time=TAI2Sec(Attribute(k2).Value);                       
+        end
+      
         [value,fist_row]=min(abs(time-first_record_time));
         [value,last_row]=min(abs(time-last_record_time));
                                              
@@ -31,9 +44,10 @@ Output_TrackInfo=[]; %定义输出坐标、高程以及时间信息的矩阵
         time=time(fist_row:last_row);
         height=height(fist_row:last_row);
    
-        trackInfo=struct('longtitude',lon,'latitude',lat,'time',time,'height',height,'orbitNum',orbitNum);  %存储该轨道对应的所有坐标、高程以及时间信息
+        trackInfo=struct('longitude',lon,'latitude',lat,'time',time,'height',height,'orbitNum',orbitNum);  %存储该轨道对应的所有坐标、高程以及时间信息
         Output_TrackInfo=[Output_TrackInfo;trackInfo];
- end
+    end
+ 
 end
 
 function [Sec] = TAI2Sec(TAI)

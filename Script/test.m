@@ -1,33 +1,7 @@
-%% useful for debugging        
 
-% figure;
-% plot(adjustBoundary(:,1),adjustBoundary(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
-% 
-% A1=[166.539,-78.719];
-% A2=[166.539,-82.755];
-% A3=[199.961,-82.755];
-% A4=[199.961,-78.719];
-% rectangleA=[A1;A2;A3;A4;A1];
-% 
-% B1=[175.206,-82.755];
-% B2=[175.206,-83.866];
-% B3=[185.619,-83.866];
-% B4=[185.619,-82.755];
-% rectangleB=[B1;B2;B3;B4;B1];
-% 
-% C1=[199.961,-81.050];
-% C2=[208.970,-81.050];
-
-% C3=[208.970,-79.474];
-% C4=[199.961,-79.474];
-% rectangleC=[C1;C2;C3;C4;C1];
-% 
-% polygon=[A1;A2;B1;B2;B3;B4;A3;A4;A1];
-% hold on;
-% plot(polygon(:,1),polygon(:,2),'k','MarkerSize',0.02); 
-% plot(rectangleB(:,1),rectangleB(:,2),'k','MarkerSize',0.02); 
-% plot(rectangleC(:,1),rectangleC(:,2),'k','MarkerSize',0.02); 
-
+B=[1,1,0,0;1,1,1,0;1,1,1,1;0,1,1,0;0,1,1,1;0,0,1,1];
+P=diag(ones(6,1));
+Nbb=inv(B.'*P*B);
 %% 对共同存在的点进行比较
 
 %1)提取出轨道号的集合
@@ -733,6 +707,68 @@
 
 %% Calibrating the results of Envisat's crossovers in Ross 
 
-load('AmerOutsideCoastline.txt');
+load('AmeryBoundary.txt');
 figure('color','w');
-plot(AmerOutsideCoastline(:,1),AmerOutsideCoastline(:,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+plot(AmeryBoundary(1:end,1),AmeryBoundary(1:end,2),'k','MarkerSize',0.01,'HandleVisibility','off'); 
+
+hold on;
+for i=1:52
+    coor=Cut200207(i).coordinate;
+    longitude=coor(:,1);
+    latitude=coor(:,2);
+    scatter(longitude,latitude,10,[127 140 141]/255,'filled','HandleVisibility','off');  
+end
+
+for i=1:60
+    coor=Amery_A200207_D200207(i).coordinate;
+    longitude=coor(:,1);
+    latitude=coor(:,2);
+    scatter(longitude,latitude,10,'r','filled','HandleVisibility','off');  
+end
+% scatter(longitude,latitude); 
+% longitude = amerycoastal(1:5:end,1);
+% latitude = amerycoastal(1:5:end,2);
+
+
+%% 绘图
+adj=max(AllBias(:,3));
+mean(standard)
+
+raw=AllBias;
+figure;
+mean(abs(Bias(:,3)));
+
+figure;
+box on;
+hold on;
+edges = (-1.15:0.05:1.15);
+h1 = histogram(AllBias(:,3),edges);
+h2 = histogram(aji1(:,3),edges);
+h3 = histogram(aji2(:,3),edges);
+% h1.FaceColor = [251 197 49]/255;
+% h2.FaceColor = [232 65 24]/255;
+h3.FaceColor = [190 190 190]/255;
+h2.FaceAlpha = 0.8;
+h3.FaceAlpha = 0.7;
+legend('平差前','整体平差','验后平差');
+
+
+ylabel('频率');
+
+figure;
+hold on ;
+box on;
+a1=histfit(AllBias(:,3),30);
+set(a1(1),'Visible','Off');
+set(a1(2),'Color',[0 0.4470 0.7410]); %曲线为绿色
+ set(a1(1),'handlevisibility','off');
+a2=histfit(aji1(:,3),30);
+set(a2(1),'Visible','Off');
+set(a2(2),'Color',[0.8500 0.3250 0.0980]); %曲线为绿色
+ set(a2(1),'handlevisibility','off');
+a3=histfit(aji2(:,3),30);
+set(a3(1),'Visible','Off');
+ set(a3(1),'handlevisibility','off');
+set(a3(2),'Color',[190 190 190]/255); %曲线为绿色
+legend('平差前','整体平差','验后平差');
+xlabel('不符值/m');
