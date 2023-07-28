@@ -7,6 +7,7 @@ DataPath=strcat('Z:\CryoSat-2 Data\Baseline_',Baseline, '\SIR_GDR\');
 StoragePath=strcat('.\Variate\',Region,'\','baseline_',Baseline,'\');   
 load(strcat(strcat('.\Variate\',Region,'\'),Region,'Boundary.mat'));
 
+
 %% 1.Reanding and clipping data  
 % year=2019;
 % for i=1:12  %Month
@@ -167,6 +168,7 @@ load(strcat(strcat('.\Variate\',Region,'\'),Region,'Boundary.mat'));
 % clear;
 %% 4. determine the crossover error in the same period (in one month)
 bof_flag='BA'; % 'BA' means 'before adjustment' 'AA' mean 'after adjustment'
+
 for k=1:10
     year=2010+k;   
     startMonth=1;

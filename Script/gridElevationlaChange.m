@@ -1,7 +1,7 @@
-Region='Amery'; 
+Region='Ross'; 
 Baseline='D';                              
 StoragePath=strcat('.\Variate\',Region,'\','baseline_',Baseline,'\');   
-load(strcat(strcat('.\Variate\',Region,'\'),Region,'Boundary.mat'));
+load(strcat(strcat('.\Variate\',Region,'\'),'边界数据\',Region,'Boundary.mat'));
 %% 1.某格网中两周期数据计算得到多个交叉点的情况，利用中误差进行剔除并选取最佳值
 
 % 1)利用中误差进行剔除
@@ -76,89 +76,89 @@ load(strcat(strcat('.\Variate\',Region,'\'),Region,'Boundary.mat'));
   
 % 1) 建立矩阵
 
-yearNum=10;
-matSize=yearNum*12;
-ym1Mat=zeros(matSize,matSize);
-for i=1:matSize-1
-    for j=i+1:matSize
-        if mod(i,12)==0
-          ym1Mat(i,j)=201000+ceil(i/12)*100+12;        
-        else
-          ym1Mat(i,j)=201000+ceil(i/12)*100+mod(i,12);        
-        end
-   end
-end
-
-ym2Mat=zeros(matSize,matSize);
-for i=1:matSize-1
-    for j=i+1:matSize
-         if mod(j,12)==0
-             ym2Mat(i,j)=201000+ceil(j/12)*100+12;
-         else
-             ym2Mat(i,j)=201000+ceil(j/12)*100+mod(j,12);
-         end     
-    end
-end
-
-% 2) 计算交叉点
-
-for ii=1:matSize-1
-    for jj=ii+1:matSize
-       path=strcat(StoragePath,'CP\row_',num2str(ii,'%03d'),'\');   %CurrentPath is "..\Crossover"
-       ym1=string(ym1Mat(ii,jj));
-       ym2=string(ym2Mat(ii,jj));
-       Ascend=[ym1,ym2];
-       Descend=[ym2,ym1];
-       disp([ii,jj]);
-       name_Total_CP=strcat(Region,'_',ym1,'_',ym2);
-       fclose('all');
-       
-       if(fopen(strcat(path,name_Total_CP,'.mat'))~=-1)  % No determination if the file already exists 
-                continue;             
-       end       
-
-       for i=1:2
-        name_A=strcat(Region,'_A',Ascend(i));
-        name_D=strcat(Region,'_D',Descend(i));
-        name_CP=strcat(Region,'_A',Ascend(i),'_D',Descend(i));       
-        char_a=char(Ascend(i));
-        char_d=char(Descend(i));
-        load(strcat(StoragePath,char_a(1:4),'\Ascend\',name_A));  
-        load(strcat(StoragePath,char_d(1:4),'\Descend\',name_D));  
-        
-        couple=JudgeCrossPoint(eval(name_A),eval(name_D));
-        sizeOfCouple=size(couple,1);
-        corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
-            'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
-        CP=repmat(corssOver,[sizeOfCouple 1]);
-        ind=1;
-        for j=1:sizeOfCouple
-            out= MyCrossOver(couple(j,1),couple(j,2),Boundary,'AA');
-            if ~isempty(out)
-                CP(ind)=out;
-                ind = ind+1;
-            end
-               close all;
-        end
-        CP=CP(1:ind-1);   
-        eval(strcat(name_CP,'=CP;'));     
-       end
-
-         % merging crossovers in the same period
-
-         AD=strcat(Region,'_A',ym1,'_D',ym2);
-         DA=strcat(Region,'_A',ym2,'_D',ym1);
-         Set=[eval(AD);eval(DA)];
-         eval(strcat(name_Total_CP,'=Set;'));
-         fileName=strcat(name_Total_CP,'.mat');
-         if ~exist(path,'dir')
-               mkdir(path); 
-         end
-         save(strcat(path,fileName),name_Total_CP); 
-         clear -regexp ^Amery
-    end
-end
-
+% yearNum=10;
+% matSize=yearNum*12;
+% ym1Mat=zeros(matSize,matSize);
+% for i=1:matSize-1
+%     for j=i+1:matSize
+%         if mod(i,12)==0
+%           ym1Mat(i,j)=201000+ceil(i/12)*100+12;        
+%         else
+%           ym1Mat(i,j)=201000+ceil(i/12)*100+mod(i,12);        
+%         end
+%    end
+% end
+% 
+% ym2Mat=zeros(matSize,matSize);
+% for i=1:matSize-1
+%     for j=i+1:matSize
+%          if mod(j,12)==0
+%              ym2Mat(i,j)=201000+ceil(j/12)*100+12;
+%          else
+%              ym2Mat(i,j)=201000+ceil(j/12)*100+mod(j,12);
+%          end     
+%     end
+% end
+% 
+% % 2) 计算交叉点
+% 
+% for ii=1:matSize-1
+%     for jj=ii+1:matSize
+%        path=strcat(StoragePath,'CP\row_',num2str(ii,'%03d'),'\');   %CurrentPath is "..\Crossover"
+%        ym1=string(ym1Mat(ii,jj));
+%        ym2=string(ym2Mat(ii,jj));
+%        Ascend=[ym1,ym2];
+%        Descend=[ym2,ym1];
+%        disp([ii,jj]);
+%        name_Total_CP=strcat(Region,'_',ym1,'_',ym2);
+%        fclose('all');
+%        
+%        if(fopen(strcat(path,name_Total_CP,'.mat'))~=-1)  % No determination if the file already exists 
+%                 continue;             
+%        end       
+% 
+%        for i=1:2
+%         name_A=strcat(Region,'_A',Ascend(i));
+%         name_D=strcat(Region,'_D',Descend(i));
+%         name_CP=strcat(Region,'_A',Ascend(i),'_D',Descend(i));       
+%         char_a=char(Ascend(i));
+%         char_d=char(Descend(i));
+%         load(strcat(StoragePath,char_a(1:4),'\Ascend\',name_A));  
+%         load(strcat(StoragePath,char_d(1:4),'\Descend\',name_D));  
+%         
+%         couple=JudgeCrossPoint(eval(name_A),eval(name_D));
+%         sizeOfCouple=size(couple,1);
+%         corssOver= struct('coordinate',[], 'orbitNum_A',[], 'orbitNum_D',[],...
+%             'altitude_A',[],'altitude_D',[], 'time_A',[],'time_D',[],'PDOP',[]); 
+%         CP=repmat(corssOver,[sizeOfCouple 1]);
+%         ind=1;
+%         for j=1:sizeOfCouple
+%             out= MyCrossOver(couple(j,1),couple(j,2),Boundary,'AA');
+%             if ~isempty(out)
+%                 CP(ind)=out;
+%                 ind = ind+1;
+%             end
+%                close all;
+%         end
+%         CP=CP(1:ind-1);   
+%         eval(strcat(name_CP,'=CP;'));     
+%        end
+% 
+%          % merging crossovers in the same period
+% 
+%          AD=strcat(Region,'_A',ym1,'_D',ym2);
+%          DA=strcat(Region,'_A',ym2,'_D',ym1);
+%          Set=[eval(AD);eval(DA)];
+%          eval(strcat(name_Total_CP,'=Set;'));
+%          fileName=strcat(name_Total_CP,'.mat');
+%          if ~exist(path,'dir')
+%                mkdir(path); 
+%          end
+%          save(strcat(path,fileName),name_Total_CP); 
+%          clear -regexp ^Amery
+%     end
+% end
+% 
 
 %% 4. 寻找格网内的交叉点并建立高程变化时间矩阵
 
@@ -166,7 +166,7 @@ end
 
 
 SpecificGrid=[195,-80.5]; 
-longInterval=1; latInterval=0.5;
+longInterval=2; latInterval=1;
 dhMat=cell(matSize,matSize,2);
 
 % 1) 寻找该格网内所有周期的交叉点
@@ -194,7 +194,7 @@ for ii=1:matSize-1
               
         % remove inaccurate data 
         ele_dif=abs(cell2mat({pickedPoints(:).altitude_A}).'-cell2mat({pickedPoints(:).altitude_D}).');
-        pickedPoints(ele_dif>=15)=[];
+        pickedPoints(ele_dif>=12)=[];
         
         orbitNum_A=Get_filed_val(pickedPoints,'orbitNum_A');
         orbitNum_D=Get_filed_val(pickedPoints,'orbitNum_D');     
@@ -250,7 +250,7 @@ end
 %% 利用不同的方法建立高程变化时间序列
 
 % 1) 只选择矩阵第一行
-ORM=dhMeanMat(1,:).';
+ORM=dhMeanMat(1,:).'*100;
 
 % 2) 选择矩阵次对角线
 DIA=zeros(matSize,1);
@@ -366,25 +366,3 @@ for jj=2:matSize
        dia=dhMeanMat(1,jj)+x(jj-1);
        DIA_ad(jj)=DIA_ad(jj)+dia;
 end
-
-%% illustrate 
-% temp=[];
-% dhMat=cell(60,60,2);
-% for ii=1:59
-%                                                                                                                                            for jj=ii+1
-%         ym1=string(ym1Mat(ii,jj));
-%         ym2=string(ym2Mat(ii,jj));
-%         name_Total_CP=strcat(Region,'_',ym1,'_',ym2); 
-%         load(name_Total_CP);
-%         temp=[temp;eval(name_Total_CP)];
-%         clear(name_Total_CP);
-%     end 
-% end 
-% 
-% coordinate=cell2mat({temp(:).coordinate});
-% longitude=coordinate(1:2:size(coordinate,2)-1);
-% latitude=coordinate(2:2:size(coordinate,2));
-% figure;
-% scatter(longitude,latitude,10,'filled');
-
-
